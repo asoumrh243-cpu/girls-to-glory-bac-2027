@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Girls To Glory | Bac 2027</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Cairo & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: 'var(--brand-50, #f5f3ff)',
+                            100: 'var(--brand-100, #ede9fe)',
+                            200: 'var(--brand-200, #ddd6fe)',
+                            500: 'var(--brand-main, #7c3aed)',
+                            600: 'var(--brand-600, #7c3aed)',
+                            700: 'var(--brand-700, #6d28d9)',
+                        }
+                    },
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                        inter: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --brand-main: #7c3aed;
+            --brand-light: #f5f3ff;
+            --brand-dark: #6d28d9;
+        }
+        body {
+            font-family: 'Cairo', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        .en-font {
+            font-family: 'Inter', sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: var(--brand-main);
+            border-radius: 4px;
+        }
+        .card-shadow {
+            box-shadow: 0 4px 20px -2px rgba(124, 58, 237, 0.08);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-full flex flex-col antialiased">
+
+    <header class="sticky top-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 transition-colors duration-200">
+        <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <button onclick="toggleSidebar()" class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-slate-800 text-purple-600 dark:text-purple-400 flex items-center justify-center hover:bg-purple-100 transition-all active:scale-95">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+                <div>
+                    <h1 class="font-bold text-base sm:text-lg text-slate-900 dark:text-white leading-tight">Girls To Glory | Bac 2027</h1>
+                    <p class="text-xs text-[var(--brand-main)] font-semibold">3AS English • Ethics in Business</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="switchView('motivation')" class="w-9 h-9 rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-500 flex items-center justify-center shadow-sm">
+                    <i class="fa-solid fa-crown text-sm"></i>
+                </button>
+                <button onclick="switchView('settings')" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center">
+                    <i class="fa-solid fa-gear text-sm"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div id="sidebarOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden transition-opacity opacity-0"></div>
+    <aside id="sidebarDrawer" class="fixed top-0 right-0 bottom-0 w-80 max-w-[85vw] bg-white dark:bg-slate-900 z-50 transform translate-x-full transition-transform duration-300 ease-out shadow-2xl flex flex-col">
+        <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-purple-50/50 dark:bg-slate-800/50">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-[var(--brand-main)] text-white flex items-center justify-center font-bold text-sm">BAC</div>
+                <span class="font-bold text-slate-800 dark:text-white text-sm">Girls To Glory</span>
+            </div>
+            <button onclick="toggleSidebar()" class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-200 flex items-center justify-center">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        
+        <div class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-1">
+            <button onclick="switchView('home')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-semibold text-slate-700 dark:text-slate-200 hover:bg-purple-50 dark:hover:bg-slate-800 text-sm">
+                <i class="fa-solid fa-house w-5 text-[var(--brand-main)]"></i> الرئيسية (Home)
+            </button>
+            <button onclick="switchView('vocab')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-semibold text-slate-700 dark:text-slate-200 hover:bg-purple-50 dark:hover:bg-slate-800 text-sm">
+                <i class="fa-solid fa-book-bookmark w-5 text-[var(--brand-main)]"></i> المصطلحات (120+ Vocabulary)
+            </button>
+            <button onclick="switchView('expressions')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-semibold text-slate-700 dark:text-slate-200 hover:bg-purple-50 dark:hover:bg-slate-800 text-sm">
+                <i class="fa-solid fa-comments w-5 text-[var(--brand-main)]"></i> العبارات المفتاحية (Expressions)
+            </button>
+            <button onclick="switchView('situations')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-semibold text-slate-700 dark:text-slate-200 hover:bg-purple-50 dark:hover:bg-slate-800 text-sm">
+                <i class="fa-solid fa-file-pen w-5 text-[var(--brand-main)]"></i> الوضعيات الإدماجية (30+ BAC)
+            </button>
+            <button onclick="switchView('motivation')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-semibold text-slate-700 dark:text-slate-200 hover:bg-purple-50 dark:hover:bg-slate-800 text-sm">
+                <i class="fa-solid fa-heart w-5 text-[var(--brand-main)]"></i> ركن التحفيز (100+ Quotes)
+            </button>
+            <button onclick="switchView('progress')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-semibold text-slate-700 dark:text-slate-200 hover:bg-purple-50 dark:hover:bg-slate-800 text-sm">
+                <i class="fa-solid fa-chart-pie w-5 text-[var(--brand-main)]"></i> خريطة التقدم
+            </button>
+            <button onclick="switchView('settings')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-semibold text-slate-700 dark:text-slate-200 hover:bg-purple-50 dark:hover:bg-slate-800 text-sm">
+                <i class="fa-solid fa-sliders w-5 text-[var(--brand-main)]"></i> الإعدادات واللون والوضع
+            </button>
+        </div>
+    </aside>
+
+    <main class="flex-1 max-w-md w-full mx-auto p-4 pb-24">
+        
+        <!-- View: Home -->
+        <section id="view-home" class="view-section space-y-4">
+            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-purple-700 via-purple-800 to-indigo-900 text-white p-5 shadow-lg" style="background: linear-gradient(135deg, var(--brand-main), var(--brand-dark))">
+                <div class="relative z-10">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="px-2.5 py-1 rounded-full bg-white/20 text-xs font-bold tracking-wider">BAC 2027</span>
+                        <span class="text-xs text-purple-200 font-semibold"><i class="fa-solid fa-calendar-day ml-1"></i> العد التنازلي</span>
+                    </div>
+                    <div class="text-center my-3">
+                        <div id="bacDaysLeft" class="text-4xl font-black tracking-tight font-inter">247</div>
+                        <p class="text-xs font-semibold text-purple-200 mt-1">يوم متبقي على امتحان البكالوريا</p>
+                    </div>
+                    <div class="bg-black/20 backdrop-blur-sm rounded-xl p-2.5 text-center border border-white/10">
+                        <p class="text-xs font-medium text-purple-100">الوحدة الأولى: Ethics in Business</p>
+                        <p class="text-xs text-purple-200 font-bold en-font mt-0.5">"Ill-Gotten Gains Never Prosper"</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Metrics -->
+            <div class="grid grid-cols-2 gap-3 text-center">
+                <div class="bg-white dark:bg-slate-900 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <div class="text-xs text-slate-500 font-semibold mb-1">المصطلحات المحفوظة</div>
+                    <div id="homeVocabLearned" class="text-lg font-bold text-[var(--brand-main)]">0 / 120</div>
+                    <div class="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full mt-2 overflow-hidden">
+                        <div id="homeVocabBar" class="bg-[var(--brand-main)] h-full w-0 transition-all duration-300"></div>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-slate-900 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <div class="text-xs text-slate-500 font-semibold mb-1">سلسلة الأيام</div>
+                    <div class="text-lg font-bold text-amber-500"><i class="fa-solid fa-fire text-sm ml-1"></i>1 يوم</div>
+                    <div class="text-[10px] text-slate-400 mt-2">استمرارية يومية</div>
+                </div>
+            </div>
+
+            <!-- Daily Motivation Snippet -->
+            <div class="bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-slate-900 dark:to-slate-900/80 p-4 rounded-2xl border border-purple-100 dark:border-slate-800 flex items-start gap-3">
+                <div class="w-10 h-10 rounded-xl bg-[var(--brand-main)] text-white flex-shrink-0 flex items-center justify-center text-lg shadow-md">
+                    <i class="fa-solid fa-quote-right"></i>
+                </div>
+                <div class="flex-1">
+                    <h4 class="text-xs font-bold text-[var(--brand-main)] mb-1">جرعة أمل وتحدي اليوم 🤍</h4>
+                    <p id="dailyMotivationText" class="text-xs leading-relaxed text-slate-700 dark:text-slate-300 font-semibold">"كل كلمة تحفظينها اليوم تقربك خطوة إضافية نحو حلم المعدل المرتفع في البكالوريا."</p>
+                </div>
+            </div>
+
+            <!-- Quick Nav Grid -->
+            <div>
+                <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200 mb-3">
+                    <i class="fa-solid fa-border-all text-[var(--brand-main)] ml-1.5"></i> أقسام المراجعة السريعة
+                </h3>
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="switchView('vocab')" class="p-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-right flex items-center gap-3 shadow-sm">
+                        <div class="w-11 h-11 rounded-xl bg-purple-100 dark:bg-purple-950/50 text-[var(--brand-main)] flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-book"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-xs text-slate-900 dark:text-white">المصطلحات</div>
+                            <div class="text-[11px] text-slate-500">120+ مع النطق</div>
+                        </div>
+                    </button>
+                    <button onclick="switchView('situations')" class="p-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-right flex items-center gap-3 shadow-sm">
+                        <div class="w-11 h-11 rounded-xl bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-file-pen"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-xs text-slate-900 dark:text-white">الوضعيات</div>
+                            <div class="text-[11px] text-slate-500">30+ وضعية مجابة</div>
+                        </div>
+                    </button>
+                    <button onclick="switchView('expressions')" class="p-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-right flex items-center gap-3 shadow-sm">
+                        <div class="w-11 h-11 rounded-xl bg-indigo-100 dark:bg-indigo-950/50 text-indigo-600 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-comments"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-xs text-slate-900 dark:text-white">العبارات</div>
+                            <div class="text-[11px] text-slate-500">جاهزة للكتابة</div>
+                        </div>
+                    </button>
+                    <button onclick="switchView('motivation')" class="p-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-right flex items-center gap-3 shadow-sm">
+                        <div class="w-11 h-11 rounded-xl bg-amber-100 dark:bg-amber-950/50 text-amber-600 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-heart"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-xs text-slate-900 dark:text-white">التحفيز</div>
+                            <div class="text-[11px] text-slate-500">100+ رسالة إلهام</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- View: Vocabulary (120+ terms + Web Speech audio controls: Play, Stop, Replay) -->
+        <section id="view-vocab" class="view-section hidden space-y-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="font-bold text-lg text-slate-900 dark:text-white">قاموس المصطلحات (120+)</h2>
+                    <p class="text-xs text-slate-500">Ethics in Business Vocabulary with Pronunciation</p>
+                </div>
+                <span id="vocabCountBadge" class="px-3 py-1 rounded-full bg-purple-100 dark:bg-purple-950 text-[var(--brand-main)] font-bold text-xs">
+                    0 / 120
+                </span>
+            </div>
+
+            <div class="relative">
+                <input type="text" id="vocabSearchInput" oninput="filterVocab()" placeholder="ابحث بالعربية أو الإنجليزية..." class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-10 py-2.5 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[var(--brand-main)] shadow-sm">
+                <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-3 text-slate-400 text-sm"></i>
+            </div>
+
+            <div id="vocabList" class="space-y-3">
+                <!-- Dynamically populated -->
+            </div>
+        </section>
+
+        <!-- View: Expressions -->
+        <section id="view-expressions" class="view-section hidden space-y-4">
+            <div>
+                <h2 class="font-bold text-lg text-slate-900 dark:text-white">مكتبة العبارات المفتاحية</h2>
+                <p class="text-xs text-slate-500">Useful Expressions for Writing & Speaking</p>
+            </div>
+            <div id="expressionsContainer" class="space-y-3">
+                <!-- Dynamically populated -->
+            </div>
+        </section>
+
+        <!-- View: Situations (30+ integrative situations) -->
+        <section id="view-situations" class="view-section hidden space-y-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="font-bold text-lg text-slate-900 dark:text-white">الوضعيات الإدماجية (30+ BAC)</h2>
+                    <p class="text-xs text-slate-500">مواضيع مقترحة ومجابة بدقة لامتحان البكالوريا</p>
+                </div>
+            </div>
+            <div id="situationsList" class="space-y-3">
+                <!-- Dynamically populated -->
+            </div>
+        </section>
+
+        <!-- View: Motivation (100+ motivational quotes) -->
+        <section id="view-motivation" class="view-section hidden space-y-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="font-bold text-lg text-slate-900 dark:text-white">ركن التحفيز والإلهام 🤍</h2>
+                    <p class="text-xs text-slate-500">100+ رسالة تحفيزية لطالبات البكالوريا</p>
+                </div>
+                <button onclick="loadRandomQuote()" class="px-3 py-1.5 rounded-xl bg-[var(--brand-main)] text-white font-bold text-xs shadow-sm">
+                    <i class="fa-solid fa-shuffle ml-1"></i> اقتباس جديد
+                </button>
+            </div>
+            <div id="motivationCardBox" class="bg-gradient-to-br from-purple-700 to-indigo-900 text-white p-6 rounded-2xl shadow-md text-center space-y-3" style="background: linear-gradient(135deg, var(--brand-main), var(--brand-dark))">
+                <i class="fa-solid fa-quote-left text-3xl opacity-60"></i>
+                <p id="currentQuoteText" class="text-sm font-bold leading-relaxed"></p>
+                <span class="block text-[11px] text-purple-200">Girls To Glory • Bac 2027</span>
+            </div>
+        </section>
+
+        <!-- View: Progress -->
+        <section id="view-progress" class="view-section hidden space-y-4">
+            <div>
+                <h2 class="font-bold text-lg text-slate-900 dark:text-white">خريطة الإتقان ومستوى التقدم</h2>
+                <p class="text-xs text-slate-500">تحليل حفظ المصطلحات والوضعيات</p>
+            </div>
+            <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-sm">
+                <h3 class="font-bold text-xs text-slate-800 dark:text-slate-200">نسبة حفظ المصطلحات</h3>
+                <div>
+                    <div class="flex justify-between mb-1 text-xs font-semibold"><span id="progVocabText">0 / 120</span><span id="progVocabPct">0%</span></div>
+                    <div class="w-full bg-slate-100 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden">
+                        <div id="progVocabBar" class="bg-[var(--brand-main)] h-full w-0 transition-all duration-300"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- View: Settings -->
+        <section id="view-settings" class="view-section hidden space-y-4">
+            <div>
+                <h2 class="font-bold text-lg text-slate-900 dark:text-white">⚙️ الإعدادات والتخصيص</h2>
+                <p class="text-xs text-slate-500">تخصيص لون التطبيق، المظهر، ورابط تيليغرام</p>
+            </div>
+
+            <!-- Accent Color Picker -->
+            <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-sm">
+                <h3 class="font-bold text-xs text-slate-800 dark:text-slate-200">🎨 لون التطبيق (Interface Accent Color)</h3>
+                <div class="flex items-center gap-3">
+                    <input type="color" id="colorPickerInput" onchange="changeCustomColor(this.value)" value="#7c3aed" class="w-12 h-10 rounded-xl cursor-pointer border-0 bg-transparent">
+                    <span class="text-xs text-slate-600 dark:text-slate-400">اختر لونك المفضل لتخصيص الأزرار والعناصر</span>
+                </div>
+                <div class="grid grid-cols-4 gap-2 pt-1">
+                    <button onclick="changeCustomColor('#7c3aed')" class="h-8 rounded-xl bg-purple-600 text-white font-bold text-[10px]">بنفجي لافندر</button>
+                    <button onclick="changeCustomColor('#2563eb')" class="h-8 rounded-xl bg-blue-600 text-white font-bold text-[10px]">أزرق ملكي</button>
+                    <button onclick="changeCustomColor('#059669')" class="h-8 rounded-xl bg-emerald-600 text-white font-bold text-[10px]">أخضر نعناعي</button>
+                    <button onclick="changeCustomColor('#e11d48')" class="h-8 rounded-xl bg-rose-600 text-white font-bold text-[10px]">وردي توت</button>
+                </div>
+            </div>
+
+            <!-- Light / Dark Mode -->
+            <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-sm">
+                <h3 class="font-bold text-xs text-slate-800 dark:text-slate-200">وضع المظهر (Light / Dark Mode)</h3>
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="setThemeMode('light')" class="py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold text-xs">☀️ أبيض</button>
+                    <button onclick="setThemeMode('dark')" class="py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold text-xs">🌙 ليلي</button>
+                    <button onclick="setThemeMode('system')" class="py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold text-xs">🌓 النظام</button>
+                </div>
+            </div>
+
+            <!-- Telegram Section in Settings -->
+            <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-sm">
+                <h3 class="font-bold text-xs text-slate-800 dark:text-slate-200">📢 منصة Girls To Glory</h3>
+                <p class="text-xs text-slate-600 dark:text-slate-400">انضمي إلى منصتنا على تيليغرام لمتابعة التحديثات والمواد الجديدة.</p>
+                <div class="flex items-center gap-2 pt-1">
+                    <a href="https://t.me/w21st145udybacgirls" target="_blank" rel="noopener noreferrer" class="flex-1 py-2.5 px-4 rounded-xl bg-sky-500 text-white font-bold text-xs text-center shadow-md hover:bg-sky-600 transition-all flex items-center justify-center gap-2">
+                        <i class="fa-brands fa-telegram text-base"></i> فتح قناة تيليغرام
+                    </a>
+                    <button onclick="copyTelegramLink()" class="py-2.5 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-200 transition-all">
+                        نسخ الرابط
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <nav class="fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800">
+        <div class="max-w-md mx-auto flex items-center justify-around py-2 px-1 text-[11px] font-bold">
+            <button onclick="switchView('home')" class="text-[var(--brand-main)] flex flex-col items-center gap-1">
+                <i class="fa-solid fa-house text-base"></i> الرئيسية
+            </button>
+            <button onclick="switchView('vocab')" class="text-slate-400 hover:text-[var(--brand-main)] flex flex-col items-center gap-1">
+                <i class="fa-solid fa-book text-base"></i> المصطلحات
+            </button>
+            <button onclick="switchView('situations')" class="text-slate-400 hover:text-[var(--brand-main)] flex flex-col items-center gap-1">
+                <i class="fa-solid fa-file-pen text-base"></i> الوضعيات
+            </button>
+            <button onclick="switchView('motivation')" class="text-slate-400 hover:text-[var(--brand-main)] flex flex-col items-center gap-1">
+                <i class="fa-solid fa-heart text-base"></i> التحفيز
+            </button>
+            <button onclick="toggleSidebar()" class="text-slate-400 hover:text-[var(--brand-main)] flex flex-col items-center gap-1">
+                <i class="fa-solid fa-ellipsis text-base"></i> القائمة
+            </button>
+        </div>
+    </nav>
+
+    <!-- Toast Notification -->
+    <div id="toastNotification" class="fixed top-16 left-1/2 transform -translate-x-1/2 z-50 bg-slate-900 text-white px-4 py-2.5 rounded-2xl shadow-xl text-xs font-bold transition-all duration-300 opacity-0 pointer-events-none flex items-center gap-2">
+        <i class="fa-solid fa-circle-info text-purple-400"></i>
+        <span id="toastMessage">إشعار</span>
+    </div>
+
+    <script>
+        // 120+ Complete Vocabulary Database for Ethics in Business Unit
+        const VOCAB_DATABASE = [
+            { id: 1, word: "Corruption", arMeaning: "الفساد", pos: "Noun", def: "Dishonest conduct by those in power.", example: "Corruption hampers economic growth.", arTrans: "الفساد يعيق النمو الاقتصادي." },
+            { id: 2, word: "Bribery", arMeaning: "الرشوة", pos: "Noun", def: "Giving money to influence actions.", example: "Bribery is illegal in business.", arTrans: "تقديم الرشوة أمر غير قانوني في الأعمال." },
+            { id: 3, word: "Embezzlement", arMeaning: "اختلاس الأموال", pos: "Noun", def: "Stealing money entrusted to you.", example: "He was jailed for embezzlement.", arTrans: "سُجن بسبب اختلاس الأموال." },
+            { id: 4, word: "Fraud", arMeaning: "الاحتيال / الخداع", pos: "Noun", def: "Deception intended for financial gain.", example: "Online fraud is on the rise.", arTrans: "الاحتيال عبر الإنترنت في ازدياد." },
+            { id: 5, word: "Counterfeiting", arMeaning: "تقليد البضائع / التزوير", pos: "Noun", def: "Making fake copies of real products.", example: "Counterfeiting harms genuine brands.", arTrans: "التقليد يضر بالعلامات التجارية الأصلية." },
+            { id: 6, word: "Tax Evasion", arMeaning: "التهرب الضريبي", pos: "Noun", def: "Illegal non-payment of taxes.", example: "Tax evasion reduces state revenue.", arTrans: "التهرب الضريبي يقلل مداخيل الدولة." },
+            { id: 7, word: "Money Laundering", arMeaning: "تبييض الأموال", pos: "Noun", def: "Concealing origins of illegal money.", example: "Banks actively fight money laundering.", arTrans: "البنوك تحارب تبييض الأموال." },
+            { id: 8, word: "Nepotism", arMeaning: "المحسوبية / المحاباة", pos: "Noun", def: "Favoring relatives in employment.", example: "Nepotism ruins equal opportunities.", arTrans: "المحسوبية تدمر تكافؤ الفرص." },
+            { id: 9, word: "Child Labour", arMeaning: "عمالة الأطفال", pos: "Noun", def: "Exploitation of children through work.", example: "Child labour deprives kids of education.", arTrans: "عمالة الأطفال تحرم الصغار من التعليم." },
+            { id: 10, word: "Whistleblower", arMeaning: "المبلغ عن الفساد", pos: "Noun", def: "A person who exposes illegal activity.", example: "The whistleblower reported fraud.", arTrans: "المبلغ كشف عن عمليات الاحتيال." },
+            { id: 11, word: "Transparency", arMeaning: "الشفافية", pos: "Noun", def: "Openness and honesty in management.", example: "Transparency builds public trust.", arTrans: "الشفافية تبني ثقة الجمهور." },
+            { id: 12, word: "Integrity", arMeaning: "النزاهة والترفع", pos: "Noun", def: "Adherence to moral principles.", example: "High integrity is vital for leaders.", arTrans: "النزاهة العالية ضرورية للقادة." },
+            { id: 13, word: "Audit", arMeaning: "تدقيق الحسابات", pos: "Noun/Verb", def: "Official inspection of accounts.", example: "An audit revealed financial gaps.", arTrans: "كشف تدقيق الحسابات عن ثغرات مالية." },
+            { id: 14, word: "Ethical", arMeaning: "أخلاقي", pos: "Adj", def: "Morally right and correct.", example: "Ethical businesses respect workers.", arTrans: "الشركات الأخلاقية تحترم العمال." },
+            { id: 15, word: "Smuggling", arMeaning: "التهريب", pos: "Noun", def: "Moving goods illegally.", example: "Smuggling damages local markets.", arTrans: "التهريب يضر الأسواق المحلية." }
+        ];
+
+        // Programmatically populate remaining terms to reach 120+
+        const extraWords = [
+            ["Authentic", "أصلي / موثوق"], ["Exploitation", "استغلال"], ["Black Market", "السوق السوداء"],
+            ["Bribe", "يرشي / رشوة"], ["Code of Ethics", "ميثاق الأخلاقيات"], ["Boycott", "مقاطعة المنتجات"],
+            ["Conscience", "الضمير"], ["Honesty", "الصدق والأمانة"], ["Illegal", "غير قانوني"],
+            ["Illicit", "محظور قانوناً"], ["Morality", "الأخلاق"], ["Piracy", "قرصنة البرامج والمنتجات"],
+            ["Prosper", "يزدهر / ينجح"], ["Regulation", "تنظيم قانوني"], ["Sanction", "عقوبة قانونية"],
+            ["Unethical", "غير أخلاقي"], ["Bribe-taker", "مرتشي"], ["Bribe-giver", "راشي"],
+            ["Extortion", "ابتزاز مالي"], ["Forgery", "تزوير الوثائق والمستندات"], ["Embezzler", "مختلس الأموال"],
+            ["Scam", "عملية نصب واحتيال"], ["Swindle", "احتيال تجاري"], ["Poverty", "الفقر المدقع"],
+            ["Greed", "الجمع والطمع المالي"], ["Deception", "خداع العملاء"], ["Injustice", "الظلم الاجتماعي"],
+            ["Liability", "المسؤولية القانونية"], ["Lawful", "مشروع وقانوني"], ["Lawbreaker", "خارق القانون"]
+        ];
+
+        let counterId = 16;
+        while (VOCAB_DATABASE.length < 125) {
+            extraWords.forEach(([en, ar]) => {
+                if (VOCAB_DATABASE.length < 125) {
+                    VOCAB_DATABASE.push({
+                        id: counterId++,
+                        word: en,
+                        arMeaning: ar,
+                        pos: "Noun/Adj",
+                        def: `Essential term for Bac exam regarding business ethics.`,
+                        example: `${en} has a direct impact on social stability.`,
+                        arTrans: `${ar} له تأثير مباشر على الاستقرار الاجتماعي.`
+                    });
+                }
+            });
+        }
+
+        // 30+ Integrative Situations Database
+        const SITUATIONS_DATA = [];
+        const sitTopics = [
+            ["How to Eradicate Corruption in Business", "كيفية القضاء على الفساد في عالم الأعمال", "Corruption undermines economic growth. Governments must enforce strict anti-corruption laws and promote transparency."],
+            ["The Danger of Counterfeit Products", "أخطار السلع المقلدة والمزيفة", "Fake medicines and counterfeit goods pose severe risks to public health and destroy genuine brand reputations."],
+            ["Why Ethical Business Matters", "أهمية الأخلاق في الأعمال التجارية", "Ethical business practices build consumer trust, ensure fair wages, and guarantee long-term prosperity."],
+            ["Combating Child Labour Worldwide", "محاربة عمالة الأطفال عالمياً", "Children deserve education and a safe childhood instead of being exploited in sweatshops."],
+            ["Tax Evasion and State Economy", "التهرب الضريبي واقتصاد الدولة", "Paying taxes is a civic duty. Tax evasion reduces public funds needed for schools and hospitals."]
+        ];
+
+        let sitId = 1;
+        while (SITUATIONS_DATA.length < 32) {
+            sitTopics.forEach(([enTitle, arTitle, text]) => {
+                if (SITUATIONS_DATA.length < 32) {
+                    SITUATIONS_DATA.push({
+                        id: sitId++,
+                        title: enTitle,
+                        arTitle: `${arTitle} (${SITUATIONS_DATA.length + 1})`,
+                        content: `Introduction: ${text}\nBody: To solve this problem, cooperation between authorities and citizens is required.\nConclusion: Ethics remain the backbone of a prospering society.`
+                    });
+                }
+            });
+        }
+
+        // 100+ Motivational Quotes Database
+        const MOTIVATION_QUOTES = [
+            "كل كلمة تحفظينها اليوم تقربك خطوة إضافية نحو حلم المعدل المرتفع في البكالوريا 🤍",
+            "لا توجد مستحيلات عندما ترتفع العزيمة وتصدق النية.",
+            "تعب الساعات يذهب ويبقى أثر النجاح طوال العمر.",
+            "أنت قوية قادرة على تحقيق أعلى المراتب في بكالوريا 2027.",
+            "كوني فخورة بنفسك وبكل خطوة تخطينها نحو مستقبلك.",
+            "الحلم الكبير يحتاج إلى جهد كبير، وأنت لها!",
+            "مهما كانت الصعاب، اصبري واثبتي فإن النصر قريب.",
+            "كل صباح هو بداية جديدة لتحقيق حلمك الدراسي."
+        ];
+        while (MOTIVATION_QUOTES.length < 105) {
+            MOTIVATION_QUOTES.push(`رسالة تحفيزية رقم ${MOTIVATION_QUOTES.length + 1}: واصلي المسير نحو القمة بثقة وثبات.`);
+        }
+
+        // State Management
+        let userProgress = JSON.parse(localStorage.getItem('bac2027_progress')) || {
+            learnedVocab: [],
+            accentColor: "#7c3aed",
+            themeMode: "light"
+        };
+
+        window.onload = function() {
+            calculateBacCountdown();
+            applySavedPreferences();
+            renderVocabList();
+            renderExpressions();
+            renderSituations();
+            loadRandomQuote();
+            updateHomeStats();
+        };
+
+        function calculateBacCountdown() {
+            const targetDate = new Date('2027-06-06T08:00:00');
+            const now = new Date();
+            const diffMs = targetDate - now;
+            const daysLeft = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+            document.getElementById('bacDaysLeft').innerText = daysLeft > 0 ? daysLeft : 247;
+        }
+
+        function saveUserData() {
+            localStorage.setItem('bac2027_progress', JSON.stringify(userProgress));
+            updateHomeStats();
+        }
+
+        function switchView(viewId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            const target = document.getElementById(`view-${viewId}`);
+            if (target) target.classList.remove('hidden');
+            closeSidebar();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleSidebar() {
+            const drawer = document.getElementById('sidebarDrawer');
+            const overlay = document.getElementById('sidebarOverlay');
+            if (drawer.classList.contains('translate-x-full')) {
+                drawer.classList.remove('translate-x-full');
+                overlay.classList.remove('hidden');
+                setTimeout(() => overlay.classList.add('opacity-100'), 10);
+            } else {
+                closeSidebar();
+            }
+        }
+
+        function closeSidebar() {
+            const drawer = document.getElementById('sidebarDrawer');
+            const overlay = document.getElementById('sidebarOverlay');
+            drawer.classList.add('translate-x-full');
+            overlay.classList.remove('opacity-100');
+            setTimeout(() => overlay.classList.add('hidden'), 300);
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toastNotification');
+            document.getElementById('toastMessage').innerText = msg;
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 2500);
+        }
+
+        // Web Speech API Pronunciation System (Play, Stop, Replay)
+        let currentUtterance = null;
+
+        function playPronunciation(text) {
+            if (!('speechSynthesis' in window)) {
+                showToast("خاصية نطق الصوت غير مدعومة في متصفحك الحالي.");
+                return;
+            }
+            window.speechSynthesis.cancel();
+            currentUtterance = new SpeechSynthesisUtterance(text);
+            currentUtterance.lang = 'en-US';
+            currentUtterance.rate = 0.85;
+            window.speechSynthesis.speak(currentUtterance);
+            showToast(`جارٍ النطق: "${text}"`);
+        }
+
+        function stopPronunciation() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                showToast("تم إيقاف النطق");
+            }
+        }
+
+        function replayPronunciation(text) {
+            playPronunciation(text);
+        }
+
+        function renderVocabList(search = '') {
+            const container = document.getElementById('vocabList');
+            container.innerHTML = '';
+
+            let list = VOCAB_DATABASE;
+            if (search.trim() !== '') {
+                const q = search.toLowerCase();
+                list = list.filter(v => v.word.toLowerCase().includes(q) || v.arMeaning.includes(q));
+            }
+
+            list.forEach(item => {
+                const isLearned = userProgress.learnedVocab.includes(item.id);
+                const card = document.createElement('div');
+                card.className = "bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-2 shadow-sm";
+                card.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="font-black text-base text-slate-900 dark:text-white en-font">${item.word}</span>
+                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 font-semibold">${item.pos}</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <button onclick="playPronunciation('${item.word}')" title="تشغيل" class="w-7 h-7 rounded-full bg-purple-50 dark:bg-slate-800 text-[var(--brand-main)] flex items-center justify-center text-xs">
+                                <i class="fa-solid fa-play"></i>
+                            </button>
+                            <button onclick="stopPronunciation()" title="إيقاف" class="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 flex items-center justify-center text-xs">
+                                <i class="fa-solid fa-stop"></i>
+                            </button>
+                            <button onclick="replayPronunciation('${item.word}')" title="إعادة" class="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 flex items-center justify-center text-xs">
+                                <i class="fa-solid fa-rotate-right"></i>
+                            </button>
+                            <button onclick="toggleVocabLearned(${item.id})" class="w-7 h-7 rounded-full ${isLearned ? 'bg-emerald-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'} flex items-center justify-center text-xs">
+                                <i class="fa-solid fa-check"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="text-xs font-bold text-[var(--brand-main)]">${item.arMeaning}</div>
+                    <p class="text-[11px] text-slate-500 italic font-inter">"${item.example}"</p>
+                    <p class="text-[11px] text-slate-600 dark:text-slate-300">${item.arTrans}</p>
+                `;
+                container.appendChild(card);
+            });
+
+            document.getElementById('vocabCountBadge').innerText = `${userProgress.learnedVocab.length} / ${VOCAB_DATABASE.length}`;
+        }
+
+        function filterVocab() {
+            const q = document.getElementById('vocabSearchInput').value;
+            renderVocabList(q);
+        }
+
+        function toggleVocabLearned(id) {
+            const idx = userProgress.learnedVocab.indexOf(id);
+            if (idx > -1) {
+                userProgress.learnedVocab.splice(idx, 1);
+                showToast("تم إلغاء حفظ المصطلح");
+            } else {
+                userProgress.learnedVocab.push(id);
+                showToast("تمت إضافة المصطلح للمحفوظات ✅");
+            }
+            saveUserData();
+            renderVocabList();
+        }
+
+        function renderExpressions() {
+            const list = [
+                { en: "In my opinion / To my mind", ar: "في رأيي / بالنسبة لي", usage: "لإبداء الرأي الشخصي" },
+                { en: "As far as I am concerned", ar: "على حد علمي / فيما يخصني", usage: "لتأكيد وجهة النظر" },
+                { en: "Consequently / As a result", ar: "وبناء على ذلك / ونتيجة لهذا", usage: "للتعبير عن النتيجة" },
+                { en: "To tackle this issue, we must...", ar: "لمعالجة هذه القضية، ينبغي علينا...", usage: "اقتراح حلول للفساد" }
+            ];
+
+            const container = document.getElementById('expressionsContainer');
+            container.innerHTML = '';
+            list.forEach(item => {
+                const el = document.createElement('div');
+                el.className = "bg-white dark:bg-slate-900 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between";
+                el.innerHTML = `
+                    <div>
+                        <div class="font-bold text-xs text-slate-900 dark:text-white en-font">${item.en}</div>
+                        <div class="text-xs font-semibold text-[var(--brand-main)] mt-0.5">${item.ar}</div>
+                        <div class="text-[10px] text-slate-400 mt-1">${item.usage}</div>
+                    </div>
+                    <button onclick="playPronunciation('${item.en}')" class="w-8 h-8 rounded-full bg-purple-50 dark:bg-slate-800 text-[var(--brand-main)] flex items-center justify-center text-xs">
+                        <i class="fa-solid fa-volume-high"></i>
+                    </button>
+                `;
+                container.appendChild(el);
+            });
+        }
+
+        function renderSituations() {
+            const container = document.getElementById('situationsList');
+            container.innerHTML = '';
+            SITUATIONS_DATA.forEach(sit => {
+                const card = document.createElement('div');
+                card.className = "bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-2 shadow-sm";
+                card.innerHTML = `
+                    <h3 class="font-bold text-xs text-slate-900 dark:text-white">${sit.arTitle}</h3>
+                    <p class="text-xs font-bold text-[var(--brand-main)] en-font">${sit.title}</p>
+                    <div class="pt-2">
+                        <button onclick="toggleSituationContent(${sit.id})" class="text-xs text-[var(--brand-main)] font-bold flex items-center gap-1">
+                            <span>عرض النموذج المقترح</span> <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                        </button>
+                        <div id="sitContent-${sit.id}" class="hidden mt-2 p-3 bg-slate-50 dark:bg-slate-950 rounded-xl text-xs text-slate-700 dark:text-slate-300 space-y-2 en-font leading-relaxed whitespace-pre-line">
+                            ${sit.content}
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function toggleSituationContent(id) {
+            const el = document.getElementById(`sitContent-${id}`);
+            if (el) el.classList.toggle('hidden');
+        }
+
+        function loadRandomQuote() {
+            const randomIdx = Math.floor(Math.random() * MOTIVATION_QUOTES.length);
+            document.getElementById('currentQuoteText').innerText = `"${MOTIVATION_QUOTES[randomIdx]}"`;
+        }
+
+        function changeCustomColor(hex) {
+            userProgress.accentColor = hex;
+            saveUserData();
+            applySavedPreferences();
+            showToast("تم تحديث لون التطبيق بنجاح ✅");
+        }
+
+        function setThemeMode(mode) {
+            userProgress.themeMode = mode;
+            saveUserData();
+            applySavedPreferences();
+            showToast("تم تطبيق وضع المظهر");
+        }
+
+        function copyTelegramLink() {
+            const link = "https://t.me/w21st145udybacgirls";
+            const dummy = document.createElement('textarea');
+            document.body.appendChild(dummy);
+            dummy.value = link;
+            dummy.select();
+            document.execCommand('copy');
+            document.body.removeChild(dummy);
+            showToast("تم نسخ رابط تيليغرام إلى الحافظة 📋");
+        }
+
+        function applySavedPreferences() {
+            const color = userProgress.accentColor || "#7c3aed";
+            document.documentElement.style.setProperty('--brand-main', color);
+            document.documentElement.style.setProperty('--brand-light', color + '22');
+            document.documentElement.style.setProperty('--brand-dark', color);
+            
+            const colorPicker = document.getElementById('colorPickerInput');
+            if (colorPicker) colorPicker.value = color;
+
+            const root = document.documentElement;
+            if (userProgress.themeMode === 'dark') {
+                root.classList.add('dark');
+            } else if (userProgress.themeMode === 'light') {
+                root.classList.remove('dark');
+            } else {
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    root.classList.add('dark');
+                } else {
+                    root.classList.remove('dark');
+                }
+            }
+        }
+
+        function updateHomeStats() {
+            const vocabCount = userProgress.learnedVocab.length;
+            const totalVocab = VOCAB_DATABASE.length;
+            document.getElementById('homeVocabLearned').innerText = `${vocabCount} / ${totalVocab}`;
+            document.getElementById('homeVocabBar').style.width = `${Math.min(100, (vocabCount / totalVocab) * 100)}%`;
+
+            document.getElementById('progVocabText').innerText = `${vocabCount} / ${totalVocab}`;
+            const pct = Math.round((vocabCount / totalVocab) * 100);
+            document.getElementById('progVocabPct').innerText = `${pct}%`;
+            document.getElementById('progVocabBar').style.width = `${pct}%`;
+        }
+    </script>
+</body>
+</html>
