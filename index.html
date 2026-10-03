@@ -3041,16 +3041,32 @@ function renderIrregularVerbs() {
                 </div>
 
 
-                <button
-                    type="button"
-                    onclick="playPronunciation('${item.base}')"
-                    class="w-10 h-10 rounded-xl
-                           bg-purple-100 dark:bg-purple-950
-                           text-[var(--brand-main)]">
+             <div class="flex items-center gap-2">
 
-                    <i class="fa-solid fa-volume-high"></i>
+    <button
+        type="button"
+        onclick="playPronunciation('${item.base}')"
+        class="w-10 h-10 rounded-xl
+               bg-purple-100 dark:bg-purple-950
+               text-[var(--brand-main)]">
 
-                </button>
+        <i class="fa-solid fa-volume-high"></i>
+
+    </button>
+
+
+    <button
+        type="button"
+        onclick="markVerbAsLearned(${item.id})"
+        class="w-10 h-10 rounded-xl
+               bg-green-100 dark:bg-green-950
+               text-green-600">
+
+        <i class="fa-solid fa-check"></i>
+
+    </button>
+
+</div>
 
             </div>
 
