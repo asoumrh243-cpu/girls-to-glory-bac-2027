@@ -1125,6 +1125,49 @@
             </div>
 
 
+                        <!-- Users Count -->
+
+            <div
+                class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+
+                <div class="flex items-center justify-between">
+
+                    <div class="flex items-center gap-3">
+
+                        <div
+                            class="w-10 h-10 rounded-xl
+                                   bg-purple-100 dark:bg-purple-950
+                                   text-[var(--brand-main)]
+                                   flex items-center justify-center">
+
+                            <i class="fa-solid fa-users"></i>
+
+                        </div>
+
+                        <div>
+
+                            <h3 class="font-bold text-xs">
+                                عدد المستخدمين
+                            </h3>
+
+                            <p class="text-[10px] text-slate-500 mt-1">
+                                الحسابات المسجلة في المنصة
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <span
+                        id="usersCount"
+                        class="text-xl font-black text-[var(--brand-main)]">
+                        -
+                    </span>
+
+                </div>
+
+            </div>
+            
             <!-- Telegram -->
 
             <div
@@ -5815,38 +5858,38 @@ renderVerbsProgressMap();
 
         <div id="authFormContainer">
 
-            <!-- Email -->
+            <!-- Username -->
 
-            <div class="mb-3">
+<div class="mb-3">
 
-                <label
-                    class="block
-                           text-xs
-                           font-bold
-                           text-slate-700 dark:text-slate-300
-                           mb-1.5">
+    <label
+        class="block
+               text-xs
+               font-bold
+               text-slate-700 dark:text-slate-300
+               mb-1.5">
 
-                    البريد الإلكتروني
+        اسم المستخدم
 
-                </label>
+    </label>
 
-                <input
-                    id="authEmail"
-                    type="email"
-                    autocomplete="email"
-                    placeholder="example@email.com"
-                    class="w-full
-                           bg-slate-50 dark:bg-slate-800
-                           border border-slate-200 dark:border-slate-700
-                           rounded-xl
-                           px-4 py-3
-                           text-sm
-                           text-slate-900 dark:text-white
-                           focus:outline-none
-                           focus:ring-2
-                           focus:ring-[var(--brand-main)]">
+    <input
+        id="authUsername"
+        type="text"
+        autocomplete="username"
+        placeholder="مثال: imad123"
+        class="w-full
+               bg-slate-50 dark:bg-slate-800
+               border border-slate-200 dark:border-slate-700
+               rounded-xl
+               px-4 py-3
+               text-sm
+               text-slate-900 dark:text-white
+               focus:outline-none
+               focus:ring-2
+               focus:ring-[var(--brand-main)]">
 
-            </div>
+</div>
 
 
             <!-- Password -->
@@ -5864,21 +5907,42 @@ renderVerbsProgressMap();
 
                 </label>
 
-                <input
-                    id="authPassword"
-                    type="password"
-                    autocomplete="current-password"
-                    placeholder="••••••••"
-                    class="w-full
-                           bg-slate-50 dark:bg-slate-800
-                           border border-slate-200 dark:border-slate-700
-                           rounded-xl
-                           px-4 py-3
-                           text-sm
-                           text-slate-900 dark:text-white
-                           focus:outline-none
-                           focus:ring-2
-                           focus:ring-[var(--brand-main)]">
+      <div class="relative">
+
+    <input
+        id="authPassword"
+        type="password"
+        autocomplete="current-password"
+        placeholder="••••••••"
+        class="w-full
+               bg-slate-50 dark:bg-slate-800
+               border border-slate-200 dark:border-slate-700
+               rounded-xl
+               px-4 py-3
+               pl-12
+               text-sm
+               text-slate-900 dark:text-white
+               focus:outline-none
+               focus:ring-2
+               focus:ring-[var(--brand-main)]">
+
+    <button
+        id="togglePasswordBtn"
+        type="button"
+        class="absolute
+               left-3
+               top-1/2
+               -translate-y-1/2
+               text-slate-400">
+
+        <i
+            id="togglePasswordIcon"
+            class="fa-solid fa-eye">
+        </i>
+
+    </button>
+
+</div>
 
             </div>
 
@@ -6102,13 +6166,15 @@ renderVerbsProgressMap();
 
 
     // Firebase Firestore
-    import {
-        getFirestore,
-        doc,
-        setDoc,
-        getDoc,
-        updateDoc
-    } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+   import {
+    getFirestore,
+    doc,
+    setDoc,
+    getDoc,
+    updateDoc,
+    collection,
+    getCountFromServer
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
 
     /* =========================================================
@@ -6181,6 +6247,42 @@ renderVerbsProgressMap();
         "Firebase initialized successfully."
     );
 
+       /* =========================================================
+   USERS COUNT
+   ========================================================= */
+
+async function loadUsersCount() {
+
+    const usersCountElement =
+        document.getElementById("usersCount");
+
+    if (!usersCountElement) return;
+
+    try {
+
+        const usersRef =
+            collection(db, "users");
+
+        const snapshot =
+            await getCountFromServer(usersRef);
+
+        usersCountElement.textContent =
+            snapshot.data().count;
+
+    } catch (error) {
+
+        console.error(
+            "Users count error:",
+            error
+        );
+
+        usersCountElement.textContent =
+            "-";
+
+    }
+
+}
+        
         /* =========================================================
        AUTHENTICATION UI
        ========================================================= */
@@ -6194,8 +6296,8 @@ renderVerbsProgressMap();
     const userInfoContainer =
         document.getElementById("userInfoContainer");
 
-    const authEmail =
-        document.getElementById("authEmail");
+    const authUsername =
+    document.getElementById("authUsername");
 
     const authPassword =
         document.getElementById("authPassword");
@@ -6207,6 +6309,40 @@ renderVerbsProgressMap();
         document.getElementById("authMessage");
 
 
+        /* =========================================================
+   SHOW / HIDE PASSWORD
+   ========================================================= */
+
+const togglePasswordBtn =
+    document.getElementById("togglePasswordBtn");
+
+const togglePasswordIcon =
+    document.getElementById("togglePasswordIcon");
+
+togglePasswordBtn?.addEventListener(
+    "click",
+    () => {
+
+        if (authPassword.type === "password") {
+
+            authPassword.type = "text";
+
+            togglePasswordIcon.className =
+                "fa-solid fa-eye-slash";
+
+        } else {
+
+            authPassword.type = "password";
+
+            togglePasswordIcon.className =
+                "fa-solid fa-eye";
+
+        }
+
+    }
+);
+
+        
     /* =========================================================
        AUTH MESSAGE
        ========================================================= */
@@ -6244,26 +6380,79 @@ renderVerbsProgressMap();
 
     }
 
+/* =========================================================
+   CREATE ACCOUNT
+   ========================================================= */
 
-    /* =========================================================
-       CREATE ACCOUNT
-       ========================================================= */
+document
+    .getElementById("registerBtn")
+    ?.addEventListener("click", async () => {
 
-    document
-        .getElementById("registerBtn")
-        ?.addEventListener("click", async () => {
+        const username =
+            authUsername.value.trim().toLowerCase();
 
-            const email =
-                authEmail.value.trim();
-
-            const password =
-                authPassword.value;
+        const password =
+            authPassword.value;
 
 
-            if (!email || !password) {
+        if (!username || !password) {
+
+            showAuthMessage(
+                "أدخلي اسم المستخدم وكلمة المرور."
+            );
+
+            return;
+
+        }
+
+
+        if (username.length < 3) {
+
+            showAuthMessage(
+                "اسم المستخدم يجب أن يكون 3 أحرف على الأقل."
+            );
+
+            return;
+
+        }
+
+
+        if (!/^[a-z0-9_]+$/.test(username)) {
+
+            showAuthMessage(
+                "اسم المستخدم يستعمل حروفًا إنجليزية وأرقامًا و _ فقط."
+            );
+
+            return;
+
+        }
+
+
+        if (password.length < 6) {
+
+            showAuthMessage(
+                "كلمة المرور يجب أن تكون 6 أحرف على الأقل."
+            );
+
+            return;
+
+        }
+
+
+        try {
+
+            const usernameRef =
+                doc(db, "usernames", username);
+
+
+            const usernameSnap =
+                await getDoc(usernameRef);
+
+
+            if (usernameSnap.exists()) {
 
                 showAuthMessage(
-                    "أدخلي البريد الإلكتروني وكلمة المرور."
+                    "اسم المستخدم هذا مستعمل من قبل."
                 );
 
                 return;
@@ -6271,64 +6460,99 @@ renderVerbsProgressMap();
             }
 
 
-            if (password.length < 6) {
-
-                showAuthMessage(
-                    "كلمة المرور يجب أن تكون 6 أحرف على الأقل."
-                );
-
-                return;
-
-            }
+            const internalEmail =
+                `${username}@girls-to-glory.firebaseapp.com`;
 
 
-            try {
-
+            const userCredential =
                 await createUserWithEmailAndPassword(
                     auth,
-                    email,
+                    internalEmail,
                     password
                 );
 
 
+            const user =
+                userCredential.user;
+
+
+            await setDoc(
+                usernameRef,
+                {
+                    username: username,
+                    uid: user.uid
+                }
+            );
+
+
+            await setDoc(
+                doc(db, "users", user.uid),
+                {
+                    username: username,
+                    uid: user.uid,
+                    isGuest: false
+                }
+            );
+
+
+            showAuthMessage(
+                "تم إنشاء الحساب بنجاح.",
+                "success"
+            );
+
+        } catch (error) {
+
+            console.error(error);
+
+            showAuthMessage(
+                "تعذر إنشاء الحساب. حاولي مرة أخرى."
+            );
+
+        }
+
+    });
+
+
+  /* =========================================================
+   LOGIN
+   ========================================================= */
+
+document
+    .getElementById("loginBtn")
+    ?.addEventListener("click", async () => {
+
+        const username =
+            authUsername.value.trim().toLowerCase();
+
+        const password =
+            authPassword.value;
+
+
+        if (!username || !password) {
+
+            showAuthMessage(
+                "أدخلي اسم المستخدم وكلمة المرور."
+            );
+
+            return;
+
+        }
+
+
+        try {
+
+            const usernameRef =
+                doc(db, "usernames", username);
+
+
+            const usernameSnap =
+                await getDoc(usernameRef);
+
+
+            if (!usernameSnap.exists()) {
+
                 showAuthMessage(
-                    "تم إنشاء الحساب بنجاح.",
-                    "success"
-                );
-
-
-            } catch (error) {
-
-                console.error(error);
-
-                showAuthMessage(
-                    "تعذر إنشاء الحساب. تأكدي من البريد وكلمة المرور."
-                );
-
-            }
-
-        });
-
-
-    /* =========================================================
-       LOGIN
-       ========================================================= */
-
-    document
-        .getElementById("loginBtn")
-        ?.addEventListener("click", async () => {
-
-            const email =
-                authEmail.value.trim();
-
-            const password =
-                authPassword.value;
-
-
-            if (!email || !password) {
-
-                showAuthMessage(
-                    "أدخلي البريد الإلكتروني وكلمة المرور."
+                    "اسم المستخدم أو كلمة المرور غير صحيحة."
                 );
 
                 return;
@@ -6336,32 +6560,34 @@ renderVerbsProgressMap();
             }
 
 
-            try {
-
-                await signInWithEmailAndPassword(
-                    auth,
-                    email,
-                    password
-                );
+            const internalEmail =
+                `${username}@girls-to-glory.firebaseapp.com`;
 
 
-                showAuthMessage(
-                    "تم تسجيل الدخول بنجاح.",
-                    "success"
-                );
+            await signInWithEmailAndPassword(
+                auth,
+                internalEmail,
+                password
+            );
 
 
-            } catch (error) {
+            showAuthMessage(
+                "تم تسجيل الدخول بنجاح.",
+                "success"
+            );
 
-                console.error(error);
 
-                showAuthMessage(
-                    "البريد الإلكتروني أو كلمة المرور غير صحيحة."
-                );
+        } catch (error) {
 
-            }
+            console.error(error);
 
-        });
+            showAuthMessage(
+                "اسم المستخدم أو كلمة المرور غير صحيحة."
+            );
+
+        }
+
+    });
 
 
     /* =========================================================
@@ -6421,60 +6647,96 @@ renderVerbsProgressMap();
         });
 
 
-    /* =========================================================
-       AUTH STATE
-       ========================================================= */
+   /* =========================================================
+   AUTH STATE
+   ========================================================= */
 
-    onAuthStateChanged(
-        auth,
-        (user) => {
+onAuthStateChanged(
+    auth,
+    async (user) => {
 
-            if (user) {
+        if (user) {
 
-                /*
-                 * المستخدم مسجل الدخول
-                 */
+            /*
+             * المستخدم مسجل الدخول
+             */
 
-                authOverlay?.classList.add("hidden");
+            authOverlay?.classList.add("hidden");
 
-                authFormContainer?.classList.add("hidden");
+            authFormContainer?.classList.add("hidden");
 
-                userInfoContainer?.classList.remove("hidden");
+            userInfoContainer?.classList.remove("hidden");
 
 
-                if (user.isAnonymous) {
+            if (user.isAnonymous) {
 
-                    authUserEmail.textContent =
-                        "مستخدم ضيف";
-
-                } else {
-
-                    authUserEmail.textContent =
-                        user.email || "مستخدم";
-
-                }
-
+                authUserEmail.textContent =
+                    "مستخدم ضيف";
 
             } else {
 
-                /*
-                 * لا يوجد مستخدم
-                 */
+                try {
 
-                authOverlay?.classList.remove("hidden");
+                    const userRef =
+                        doc(db, "users", user.uid);
 
-                authFormContainer?.classList.remove("hidden");
-
-                userInfoContainer?.classList.add("hidden");
+                    const userSnap =
+                        await getDoc(userRef);
 
 
-                authUserEmail.textContent =
-                    "-";
+                    if (userSnap.exists()) {
+
+                        const userData =
+                            userSnap.data();
+
+                        authUserEmail.textContent =
+                            userData.username || "مستخدم";
+
+                    } else {
+
+                        authUserEmail.textContent =
+                            "مستخدم";
+
+                    }
+
+                } catch (error) {
+
+                    console.error(error);
+
+                    authUserEmail.textContent =
+                        "مستخدم";
+
+                }
 
             }
 
+
+        } else {
+
+            /*
+             * لا يوجد مستخدم
+             */
+
+            authOverlay?.classList.remove("hidden");
+
+            authFormContainer?.classList.remove("hidden");
+
+            userInfoContainer?.classList.add("hidden");
+
+
+            authUserEmail.textContent =
+                "-";
+
         }
-    );
+
+    }
+);
+
+   /* =========================================================
+   LOAD USERS COUNT
+   ========================================================= */
+
+loadUsersCount();
         
 </script>
     
