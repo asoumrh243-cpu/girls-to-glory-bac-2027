@@ -5739,5 +5739,744 @@ renderVerbsProgressMap();
         
     </script>
 
+    <!-- =========================================================
+     AUTHENTICATION UI
+     ========================================================= -->
+
+<div
+    id="authOverlay"
+    class="fixed inset-0 z-[9999]
+           bg-slate-100 dark:bg-slate-950
+           flex items-center justify-center
+           p-4 hidden">
+
+    <div
+        class="w-full max-w-md
+               bg-white dark:bg-slate-900
+               border border-slate-200 dark:border-slate-800
+               rounded-3xl
+               shadow-xl
+               p-6">
+
+        <!-- Logo / Title -->
+
+        <div class="text-center mb-6">
+
+            <div
+                class="w-16 h-16
+                       mx-auto
+                       rounded-2xl
+                       bg-purple-100 dark:bg-purple-950
+                       flex items-center justify-center
+                       text-[var(--brand-main)]
+                       text-2xl">
+
+                <i class="fa-solid fa-graduation-cap"></i>
+
+            </div>
+
+            <h2
+                class="font-bold text-xl
+                       text-slate-900 dark:text-white
+                       mt-4">
+
+                Girls To Glory
+
+            </h2>
+
+            <p
+                class="text-xs
+                       text-slate-500
+                       mt-1">
+
+                BAC 2027
+
+            </p>
+
+        </div>
+
+
+        <!-- Auth Message -->
+
+        <div
+            id="authMessage"
+            class="hidden
+                   mb-4
+                   rounded-xl
+                   p-3
+                   text-xs
+                   text-center">
+        </div>
+
+
+        <!-- =================================================
+             LOGIN / REGISTER
+             ================================================= -->
+
+        <div id="authFormContainer">
+
+            <!-- Email -->
+
+            <div class="mb-3">
+
+                <label
+                    class="block
+                           text-xs
+                           font-bold
+                           text-slate-700 dark:text-slate-300
+                           mb-1.5">
+
+                    البريد الإلكتروني
+
+                </label>
+
+                <input
+                    id="authEmail"
+                    type="email"
+                    autocomplete="email"
+                    placeholder="example@email.com"
+                    class="w-full
+                           bg-slate-50 dark:bg-slate-800
+                           border border-slate-200 dark:border-slate-700
+                           rounded-xl
+                           px-4 py-3
+                           text-sm
+                           text-slate-900 dark:text-white
+                           focus:outline-none
+                           focus:ring-2
+                           focus:ring-[var(--brand-main)]">
+
+            </div>
+
+
+            <!-- Password -->
+
+            <div class="mb-4">
+
+                <label
+                    class="block
+                           text-xs
+                           font-bold
+                           text-slate-700 dark:text-slate-300
+                           mb-1.5">
+
+                    كلمة المرور
+
+                </label>
+
+                <input
+                    id="authPassword"
+                    type="password"
+                    autocomplete="current-password"
+                    placeholder="••••••••"
+                    class="w-full
+                           bg-slate-50 dark:bg-slate-800
+                           border border-slate-200 dark:border-slate-700
+                           rounded-xl
+                           px-4 py-3
+                           text-sm
+                           text-slate-900 dark:text-white
+                           focus:outline-none
+                           focus:ring-2
+                           focus:ring-[var(--brand-main)]">
+
+            </div>
+
+
+            <!-- Login -->
+
+            <button
+                id="loginBtn"
+                type="button"
+                class="w-full
+                       rounded-xl
+                       bg-[var(--brand-main)]
+                       text-white
+                       font-bold
+                       py-3
+                       text-sm
+                       transition
+                       hover:opacity-90">
+
+                <i class="fa-solid fa-right-to-bracket ml-1"></i>
+
+                تسجيل الدخول
+
+            </button>
+
+
+            <!-- Register -->
+
+            <button
+                id="registerBtn"
+                type="button"
+                class="w-full
+                       rounded-xl
+                       bg-purple-100 dark:bg-purple-950
+                       text-[var(--brand-main)]
+                       font-bold
+                       py-3
+                       text-sm
+                       mt-2
+                       transition
+                       hover:opacity-90">
+
+                <i class="fa-solid fa-user-plus ml-1"></i>
+
+                إنشاء حساب
+
+            </button>
+
+
+            <!-- Divider -->
+
+            <div class="flex items-center gap-3 my-5">
+
+                <div
+                    class="flex-1 h-px
+                           bg-slate-200 dark:bg-slate-800">
+                </div>
+
+                <span
+                    class="text-[10px]
+                           text-slate-400">
+
+                    أو
+
+                </span>
+
+                <div
+                    class="flex-1 h-px
+                           bg-slate-200 dark:bg-slate-800">
+                </div>
+
+            </div>
+
+
+            <!-- Guest -->
+
+            <button
+                id="guestLoginBtn"
+                type="button"
+                class="w-full
+                       rounded-xl
+                       border border-slate-200 dark:border-slate-700
+                       bg-white dark:bg-slate-900
+                       text-slate-700 dark:text-slate-200
+                       font-bold
+                       py-3
+                       text-sm
+                       transition
+                       hover:bg-slate-50 dark:hover:bg-slate-800">
+
+                <i class="fa-solid fa-user-secret ml-1"></i>
+
+                الدخول كضيف
+
+            </button>
+
+        </div>
+
+
+        <!-- =================================================
+             LOGGED IN USER
+             ================================================= -->
+
+        <div
+            id="userInfoContainer"
+            class="hidden">
+
+            <div
+                class="bg-slate-50 dark:bg-slate-800
+                       rounded-2xl
+                       p-4
+                       mb-4">
+
+                <div class="flex items-center gap-3">
+
+                    <div
+                        class="w-12 h-12
+                               rounded-xl
+                               bg-purple-100 dark:bg-purple-950
+                               text-[var(--brand-main)]
+                               flex items-center justify-center">
+
+                        <i class="fa-solid fa-user"></i>
+
+                    </div>
+
+
+                    <div class="min-w-0">
+
+                        <p
+                            class="text-[10px]
+                                   text-slate-400">
+
+                            الحساب الحالي
+
+                        </p>
+
+                        <p
+                            id="authUserEmail"
+                            class="text-sm
+                                   font-bold
+                                   text-slate-900 dark:text-white
+                                   truncate">
+
+                            -
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <button
+                id="logoutBtn"
+                type="button"
+                class="w-full
+                       rounded-xl
+                       bg-red-50 dark:bg-red-950/30
+                       text-red-600 dark:text-red-400
+                       font-bold
+                       py-3
+                       text-sm">
+
+                <i class="fa-solid fa-right-from-bracket ml-1"></i>
+
+                تسجيل الخروج
+
+            </button>
+
+        </div>
+
+
+        <!-- Footer -->
+
+        <p
+            class="text-[10px]
+                   text-center
+                   text-slate-400
+                   mt-5
+                   leading-relaxed">
+
+            يمكنك الدخول كضيف وتجربة الموقع
+            بدون إنشاء حساب.
+
+        </p>
+
+    </div>
+
+</div>
+    
+    <script type="module">
+
+    /* =========================================================
+       FIREBASE
+       ========================================================= */
+
+    // Firebase App
+    import {
+        initializeApp
+    } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+
+
+    // Firebase Analytics
+    import {
+        getAnalytics
+    } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-analytics.js";
+
+
+    // Firebase Authentication
+    import {
+        getAuth,
+        onAuthStateChanged,
+        signInAnonymously,
+        createUserWithEmailAndPassword,
+        signInWithEmailAndPassword,
+        signOut
+    } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+
+    // Firebase Firestore
+    import {
+        getFirestore,
+        doc,
+        setDoc,
+        getDoc,
+        updateDoc
+    } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+
+    /* =========================================================
+       FIREBASE CONFIG
+       ========================================================= */
+
+    const firebaseConfig = {
+
+        apiKey:
+            "AIzaSyAI6OFtVzRr7Gj0lMRJSIczWtHrxVbNnII",
+
+        authDomain:
+            "girls-to-glory.firebaseapp.com",
+
+        projectId:
+            "girls-to-glory",
+
+        storageBucket:
+            "girls-to-glory.firebasestorage.app",
+
+        messagingSenderId:
+            "127061930925",
+
+        appId:
+            "1:127061930925:web:c24c33e9bbed9a5383a724",
+
+        measurementId:
+            "G-PTGDRQDSLE"
+
+    };
+
+
+    /* =========================================================
+       INITIALIZE FIREBASE
+       ========================================================= */
+
+    const app =
+        initializeApp(firebaseConfig);
+
+
+    /* =========================================================
+       ANALYTICS
+       ========================================================= */
+
+    const analytics =
+        getAnalytics(app);
+
+
+    /* =========================================================
+       AUTHENTICATION
+       ========================================================= */
+
+    const auth =
+        getAuth(app);
+
+
+    /* =========================================================
+       FIRESTORE
+       ========================================================= */
+
+    const db =
+        getFirestore(app);
+
+
+    /* =========================================================
+       TEST
+       ========================================================= */
+
+    console.log(
+        "Firebase initialized successfully."
+    );
+
+        /* =========================================================
+       AUTHENTICATION UI
+       ========================================================= */
+
+    const authOverlay =
+        document.getElementById("authOverlay");
+
+    const authFormContainer =
+        document.getElementById("authFormContainer");
+
+    const userInfoContainer =
+        document.getElementById("userInfoContainer");
+
+    const authEmail =
+        document.getElementById("authEmail");
+
+    const authPassword =
+        document.getElementById("authPassword");
+
+    const authUserEmail =
+        document.getElementById("authUserEmail");
+
+    const authMessage =
+        document.getElementById("authMessage");
+
+
+    /* =========================================================
+       AUTH MESSAGE
+       ========================================================= */
+
+    function showAuthMessage(message, type = "error") {
+
+        if (!authMessage) return;
+
+        authMessage.textContent = message;
+
+        authMessage.classList.remove(
+            "hidden",
+            "bg-red-50",
+            "text-red-600",
+            "bg-green-50",
+            "text-green-600"
+        );
+
+
+        if (type === "success") {
+
+            authMessage.classList.add(
+                "bg-green-50",
+                "text-green-600"
+            );
+
+        } else {
+
+            authMessage.classList.add(
+                "bg-red-50",
+                "text-red-600"
+            );
+
+        }
+
+    }
+
+
+    /* =========================================================
+       CREATE ACCOUNT
+       ========================================================= */
+
+    document
+        .getElementById("registerBtn")
+        ?.addEventListener("click", async () => {
+
+            const email =
+                authEmail.value.trim();
+
+            const password =
+                authPassword.value;
+
+
+            if (!email || !password) {
+
+                showAuthMessage(
+                    "أدخلي البريد الإلكتروني وكلمة المرور."
+                );
+
+                return;
+
+            }
+
+
+            if (password.length < 6) {
+
+                showAuthMessage(
+                    "كلمة المرور يجب أن تكون 6 أحرف على الأقل."
+                );
+
+                return;
+
+            }
+
+
+            try {
+
+                await createUserWithEmailAndPassword(
+                    auth,
+                    email,
+                    password
+                );
+
+
+                showAuthMessage(
+                    "تم إنشاء الحساب بنجاح.",
+                    "success"
+                );
+
+
+            } catch (error) {
+
+                console.error(error);
+
+                showAuthMessage(
+                    "تعذر إنشاء الحساب. تأكدي من البريد وكلمة المرور."
+                );
+
+            }
+
+        });
+
+
+    /* =========================================================
+       LOGIN
+       ========================================================= */
+
+    document
+        .getElementById("loginBtn")
+        ?.addEventListener("click", async () => {
+
+            const email =
+                authEmail.value.trim();
+
+            const password =
+                authPassword.value;
+
+
+            if (!email || !password) {
+
+                showAuthMessage(
+                    "أدخلي البريد الإلكتروني وكلمة المرور."
+                );
+
+                return;
+
+            }
+
+
+            try {
+
+                await signInWithEmailAndPassword(
+                    auth,
+                    email,
+                    password
+                );
+
+
+                showAuthMessage(
+                    "تم تسجيل الدخول بنجاح.",
+                    "success"
+                );
+
+
+            } catch (error) {
+
+                console.error(error);
+
+                showAuthMessage(
+                    "البريد الإلكتروني أو كلمة المرور غير صحيحة."
+                );
+
+            }
+
+        });
+
+
+    /* =========================================================
+       GUEST LOGIN
+       ========================================================= */
+
+    document
+        .getElementById("guestLoginBtn")
+        ?.addEventListener("click", async () => {
+
+            try {
+
+                await signInAnonymously(auth);
+
+
+                showAuthMessage(
+                    "تم الدخول كضيف بنجاح.",
+                    "success"
+                );
+
+
+            } catch (error) {
+
+                console.error(error);
+
+                showAuthMessage(
+                    "تعذر الدخول كضيف."
+                );
+
+            }
+
+        });
+
+
+    /* =========================================================
+       LOGOUT
+       ========================================================= */
+
+    document
+        .getElementById("logoutBtn")
+        ?.addEventListener("click", async () => {
+
+            try {
+
+                await signOut(auth);
+
+            } catch (error) {
+
+                console.error(error);
+
+                showAuthMessage(
+                    "تعذر تسجيل الخروج."
+                );
+
+            }
+
+        });
+
+
+    /* =========================================================
+       AUTH STATE
+       ========================================================= */
+
+    onAuthStateChanged(
+        auth,
+        (user) => {
+
+            if (user) {
+
+                /*
+                 * المستخدم مسجل الدخول
+                 */
+
+                authOverlay?.classList.add("hidden");
+
+                authFormContainer?.classList.add("hidden");
+
+                userInfoContainer?.classList.remove("hidden");
+
+
+                if (user.isAnonymous) {
+
+                    authUserEmail.textContent =
+                        "مستخدم ضيف";
+
+                } else {
+
+                    authUserEmail.textContent =
+                        user.email || "مستخدم";
+
+                }
+
+
+            } else {
+
+                /*
+                 * لا يوجد مستخدم
+                 */
+
+                authOverlay?.classList.remove("hidden");
+
+                authFormContainer?.classList.remove("hidden");
+
+                userInfoContainer?.classList.add("hidden");
+
+
+                authUserEmail.textContent =
+                    "-";
+
+            }
+
+        }
+    );
+        
+</script>
+    
 </body>
     </html>
