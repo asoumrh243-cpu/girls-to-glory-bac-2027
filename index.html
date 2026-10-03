@@ -542,6 +542,62 @@
         </section>
 
 
+        <!-- ================= IRREGULAR VERBS ================= -->
+
+<section id="view-irregular-verbs"
+    class="view-section hidden space-y-4">
+
+    <div class="flex items-center justify-between">
+
+        <div>
+            <h2 class="font-bold text-lg text-slate-900 dark:text-white">
+                الأفعال غير المنتظمة
+            </h2>
+
+            <p class="text-xs text-slate-500">
+                Irregular Verbs
+            </p>
+        </div>
+
+        <span id="verbsCountBadge"
+            class="px-3 py-1 rounded-full bg-purple-100 dark:bg-purple-950 text-[var(--brand-main)] font-bold text-xs">
+            0 / 0
+        </span>
+
+    </div>
+
+
+    <div class="relative">
+
+        <input
+            type="text"
+            id="verbsSearchInput"
+            oninput="filterIrregularVerbs()"
+            placeholder="ابحثي عن الفعل..."
+            class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-10 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-[var(--brand-main)]">
+
+        <i
+            class="fa-solid fa-magnifying-glass absolute right-3.5 top-3 text-slate-400 text-sm">
+        </i>
+
+    </div>
+
+
+    <div
+        class="bg-purple-50 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-900 p-3 rounded-xl">
+
+        <p class="text-[11px] text-purple-700 dark:text-purple-300 leading-relaxed">
+            احفظي الأفعال غير المنتظمة مع التصريفات الثلاثة والمعنى والنطق.
+        </p>
+
+    </div>
+
+
+    <div id="irregularVerbsList" class="space-y-3"></div>
+
+</section>
+
+        
         <!-- ================= QUIZZES ================= -->
 
         <section id="view-quizzes"
@@ -2502,6 +2558,255 @@
 
 
         /* =========================================================
+   IRREGULAR VERBS DATABASE
+   ========================================================= */
+
+const IRREGULAR_VERBS = [
+
+    {
+        id: 1,
+        base: "be",
+        past: "was / were",
+        participle: "been",
+        ar: "يكون"
+    },
+
+    {
+        id: 2,
+        base: "become",
+        past: "became",
+        participle: "become",
+        ar: "يصبح"
+    },
+
+    {
+        id: 3,
+        base: "begin",
+        past: "began",
+        participle: "begun",
+        ar: "يبدأ"
+    },
+
+    {
+        id: 4,
+        base: "break",
+        past: "broke",
+        participle: "broken",
+        ar: "يكسر"
+    },
+
+    {
+        id: 5,
+        base: "bring",
+        past: "brought",
+        participle: "brought",
+        ar: "يجلب"
+    },
+
+    {
+        id: 6,
+        base: "build",
+        past: "built",
+        participle: "built",
+        ar: "يبني"
+    },
+
+    {
+        id: 7,
+        base: "buy",
+        past: "bought",
+        participle: "bought",
+        ar: "يشتري"
+    },
+
+    {
+        id: 8,
+        base: "come",
+        past: "came",
+        participle: "come",
+        ar: "يأتي"
+    },
+
+    {
+        id: 9,
+        base: "do",
+        past: "did",
+        participle: "done",
+        ar: "يفعل"
+    },
+
+    {
+        id: 10,
+        base: "drink",
+        past: "drank",
+        participle: "drunk",
+        ar: "يشرب"
+    },
+
+    {
+        id: 11,
+        base: "drive",
+        past: "drove",
+        participle: "driven",
+        ar: "يقود"
+    },
+
+    {
+        id: 12,
+        base: "eat",
+        past: "ate",
+        participle: "eaten",
+        ar: "يأكل"
+    },
+
+    {
+        id: 13,
+        base: "fall",
+        past: "fell",
+        participle: "fallen",
+        ar: "يسقط"
+    },
+
+    {
+        id: 14,
+        base: "feel",
+        past: "felt",
+        participle: "felt",
+        ar: "يشعر"
+    },
+
+    {
+        id: 15,
+        base: "find",
+        past: "found",
+        participle: "found",
+        ar: "يجد"
+    },
+
+    {
+        id: 16,
+        base: "forget",
+        past: "forgot",
+        participle: "forgotten",
+        ar: "ينسى"
+    },
+
+    {
+        id: 17,
+        base: "get",
+        past: "got",
+        participle: "got / gotten",
+        ar: "يحصل على"
+    },
+
+    {
+        id: 18,
+        base: "give",
+        past: "gave",
+        participle: "given",
+        ar: "يعطي"
+    },
+
+    {
+        id: 19,
+        base: "go",
+        past: "went",
+        participle: "gone",
+        ar: "يذهب"
+    },
+
+    {
+        id: 20,
+        base: "have",
+        past: "had",
+        participle: "had",
+        ar: "يملك / لديه"
+    },
+
+    {
+        id: 21,
+        base: "know",
+        past: "knew",
+        participle: "known",
+        ar: "يعرف"
+    },
+
+    {
+        id: 22,
+        base: "leave",
+        past: "left",
+        participle: "left",
+        ar: "يغادر / يترك"
+    },
+
+    {
+        id: 23,
+        base: "make",
+        past: "made",
+        participle: "made",
+        ar: "يصنع"
+    },
+
+    {
+        id: 24,
+        base: "meet",
+        past: "met",
+        participle: "met",
+        ar: "يلتقي"
+    },
+
+    {
+        id: 25,
+        base: "read",
+        past: "read",
+        participle: "read",
+        ar: "يقرأ"
+    },
+
+    {
+        id: 26,
+        base: "run",
+        past: "ran",
+        participle: "run",
+        ar: "يجري"
+    },
+
+    {
+        id: 27,
+        base: "say",
+        past: "said",
+        participle: "said",
+        ar: "يقول"
+    },
+
+    {
+        id: 28,
+        base: "see",
+        past: "saw",
+        participle: "seen",
+        ar: "يرى"
+    },
+
+    {
+        id: 29,
+        base: "take",
+        past: "took",
+        participle: "taken",
+        ar: "يأخذ"
+    },
+
+    {
+        id: 30,
+        base: "write",
+        past: "wrote",
+        participle: "written",
+        ar: "يكتب"
+    }
+
+];
+
+        
+        /* =========================================================
            MOTIVATION
            ========================================================= */
 
@@ -2611,6 +2916,164 @@
         ];
 
 
+        /* =========================================================
+   IRREGULAR VERBS
+   ========================================================= */
+
+function renderIrregularVerbs() {
+
+    const list =
+        document.getElementById("irregularVerbsList");
+
+    if (!list) return;
+
+    const searchInput =
+        document.getElementById("verbsSearchInput");
+
+    const search =
+        (searchInput?.value || "")
+            .trim()
+            .toLowerCase();
+
+    const filtered =
+        IRREGULAR_VERBS.filter(item =>
+
+            item.base.toLowerCase().includes(search) ||
+
+            item.past.toLowerCase().includes(search) ||
+
+            item.participle.toLowerCase().includes(search) ||
+
+            item.ar.toLowerCase().includes(search)
+
+        );
+
+
+    list.innerHTML = filtered.map(item => `
+
+        <div
+            class="bg-white dark:bg-slate-900
+                   border border-slate-200 dark:border-slate-800
+                   rounded-2xl p-4">
+
+            <div class="flex items-center justify-between gap-3">
+
+                <div>
+
+                    <h3
+                        class="font-bold text-base
+                               text-slate-900 dark:text-white">
+                        ${item.base}
+                    </h3>
+
+                    <p class="text-xs text-slate-500 mt-1">
+                        ${item.ar}
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    onclick="playPronunciation('${item.base}')"
+                    class="w-10 h-10 rounded-xl
+                           bg-purple-100 dark:bg-purple-950
+                           text-[var(--brand-main)]">
+
+                    <i class="fa-solid fa-volume-high"></i>
+
+                </button>
+
+            </div>
+
+
+            <div class="grid grid-cols-3 gap-2 mt-4">
+
+
+                <div
+                    class="bg-slate-50 dark:bg-slate-800
+                           rounded-xl p-2 text-center">
+
+                    <div class="text-[10px] text-slate-400">
+                        Base
+                    </div>
+
+                    <div
+                        class="font-bold text-sm
+                               text-slate-900 dark:text-white">
+                        ${item.base}
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="bg-slate-50 dark:bg-slate-800
+                           rounded-xl p-2 text-center">
+
+                    <div class="text-[10px] text-slate-400">
+                        Past
+                    </div>
+
+                    <div
+                        class="font-bold text-sm
+                               text-slate-900 dark:text-white">
+                        ${item.past}
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="bg-slate-50 dark:bg-slate-800
+                           rounded-xl p-2 text-center">
+
+                    <div class="text-[10px] text-slate-400">
+                        Past Participle
+                    </div>
+
+                    <div
+                        class="font-bold text-sm
+                               text-slate-900 dark:text-white">
+                        ${item.participle}
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    `).join("");
+
+
+    updateIrregularVerbsBadge(
+        filtered.length
+    );
+}
+
+
+function filterIrregularVerbs() {
+
+    renderIrregularVerbs();
+
+}
+
+
+function updateIrregularVerbsBadge(count) {
+
+    const badge =
+        document.getElementById("verbsCountBadge");
+
+    if (!badge) return;
+
+    badge.textContent =
+        `${count} / ${IRREGULAR_VERBS.length}`;
+
+}
+
+        
         /* =========================================================
            EXPRESSIONS
            ========================================================= */
@@ -5033,6 +5496,8 @@
 
         }
 
+        renderIrregularVerbs();
+        
     </script>
 
 </body>
