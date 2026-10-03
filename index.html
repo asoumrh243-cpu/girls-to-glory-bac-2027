@@ -5564,7 +5564,7 @@ function updateIrregularVerbsBadge(count) {
 
         }
 
-        /* =========================================================
+    /* =========================================================
    IRREGULAR VERBS PROGRESS MAP
    ========================================================= */
 
@@ -5576,33 +5576,75 @@ function renderVerbsProgressMap() {
     if (!map) return;
 
 
-    map.innerHTML = IRREGULAR_VERBS.map((verb, index) => `
+    const learnedVerbs =
+        JSON.parse(
+            localStorage.getItem("learnedIrregularVerbs") || "[]"
+        );
 
-        <div
-            class="aspect-square rounded-xl
-                   bg-slate-100 dark:bg-slate-800
-                   border border-slate-200 dark:border-slate-700
-                   flex flex-col items-center justify-center
-                   text-center p-1">
 
-            <span class="text-[10px] text-slate-400">
-                ${index + 1}
-            </span>
+    map.innerHTML =
+        IRREGULAR_VERBS.map((verb, index) => {
 
-            <span
-                class="text-xs font-bold
-                       text-slate-700 dark:text-slate-200
-                       truncate max-w-full px-1">
-                ${verb.base}
-            </span>
+            const isLearned =
+                learnedVerbs.includes(verb.id);
 
-        </div>
 
-    `).join("");
+            return `
+
+                <div
+                    class="aspect-square rounded-xl
+                           ${isLearned
+                               ? "bg-green-100 dark:bg-green-950 border-green-300 dark:border-green-800"
+                               : "bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700"}
+                           border
+                           flex flex-col items-center justify-center
+                           text-center p-1
+                           transition-all duration-300">
+
+                    <span
+                        class="text-[10px]
+                               ${isLearned
+                                   ? "text-green-600 dark:text-green-400"
+                                   : "text-slate-400"}">
+
+                        ${index + 1}
+
+                    </span>
+
+
+                    <span
+                        class="text-xs font-bold
+                               ${isLearned
+                                   ? "text-green-700 dark:text-green-300"
+                                   : "text-slate-700 dark:text-slate-200"}
+                               truncate max-w-full px-1">
+
+                        ${verb.base}
+
+                    </span>
+
+
+                    ${
+                        isLearned
+                            ? `
+                                <i
+                                    class="fa-solid fa-circle-check
+                                           text-green-500 text-[11px] mt-1">
+                                </i>
+                              `
+                            : ""
+                    }
+
+                </div>
+
+            `;
+
+        }).join("");
 
 
     updateVerbsProgress();
 }
+
 
 
 function updateVerbsProgress() {
@@ -5619,7 +5661,16 @@ function updateVerbsProgress() {
     const total =
         IRREGULAR_VERBS.length;
 
-    const learned = 0;
+
+    const learnedVerbs =
+        JSON.parse(
+            localStorage.getItem("learnedIrregularVerbs") || "[]"
+        );
+
+
+    const learned =
+        learnedVerbs.length;
+
 
     const percentage =
         total > 0
@@ -5630,11 +5681,43 @@ function updateVerbsProgress() {
     progressText.textContent =
         `${learned} / ${total}`;
 
+
     progressBar.style.width =
         `${percentage}%`;
-}
+}   
 
-        
+    function markVerbAsLearned(verbId) {
+
+    let learnedVerbs =
+        JSON.parse(
+            localStorage.getItem("learnedIrregularVerbs") || "[]"
+        );
+
+
+    if (!learnedVerbs.includes(verbId)) {
+
+        learnedVerbs.push(verbId);
+
+    } else {
+
+        learnedVerbs =
+            learnedVerbs.filter(id => id !== verbId);
+
+    }
+
+
+    localStorage.setItem(
+        "learnedIrregularVerbs",
+        JSON.stringify(learnedVerbs)
+    );
+
+
+    updateVerbsProgress();
+
+    renderVerbsProgressMap();
+
+    renderIrregularVerbs();
+}    
         renderIrregularVerbs();
 renderVerbsProgressMap();
         
