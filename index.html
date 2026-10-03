@@ -598,6 +598,69 @@
     </div>
 
 
+        <!-- ================= VERBS PROGRESS MAP ================= -->
+
+    <div
+        class="bg-white dark:bg-slate-900
+               border border-slate-200 dark:border-slate-800
+               rounded-2xl p-4">
+
+        <div class="flex items-center justify-between gap-3">
+
+            <div>
+
+                <h3
+                    class="font-bold text-sm
+                           text-slate-900 dark:text-white">
+                    خريطة تقدمك
+                </h3>
+
+                <p class="text-[11px] text-slate-500 mt-1">
+                    تقدّمك في حفظ الأفعال غير المنتظمة
+                </p>
+
+            </div>
+
+            <div
+                id="verbsProgressText"
+                class="text-xs font-bold text-[var(--brand-main)]">
+                0 / 30
+            </div>
+
+        </div>
+
+
+        <!-- Progress Bar -->
+
+        <div
+            class="w-full h-2
+                   bg-slate-100 dark:bg-slate-800
+                   rounded-full overflow-hidden mt-4">
+
+            <div
+                id="verbsProgressBar"
+                class="h-full rounded-full
+                       bg-[var(--brand-main)]
+                       transition-all duration-500"
+                style="width: 0%;">
+            </div>
+
+        </div>
+
+
+        <!-- Progress Map -->
+
+        <div
+            id="verbsProgressMap"
+            class="grid grid-cols-5 gap-2 mt-4">
+
+            <!-- سيتم إنشاء مراحل الأفعال هنا بواسطة JavaScript -->
+
+        </div>
+
+    </div>
+
+
     <div id="irregularVerbsList" class="space-y-3"></div>
 
 </section>
@@ -5501,7 +5564,79 @@ function updateIrregularVerbsBadge(count) {
 
         }
 
+        /* =========================================================
+   IRREGULAR VERBS PROGRESS MAP
+   ========================================================= */
+
+function renderVerbsProgressMap() {
+
+    const map =
+        document.getElementById("verbsProgressMap");
+
+    if (!map) return;
+
+
+    map.innerHTML = IRREGULAR_VERBS.map((verb, index) => `
+
+        <div
+            class="aspect-square rounded-xl
+                   bg-slate-100 dark:bg-slate-800
+                   border border-slate-200 dark:border-slate-700
+                   flex flex-col items-center justify-center
+                   text-center p-1">
+
+            <span class="text-[10px] text-slate-400">
+                ${index + 1}
+            </span>
+
+            <span
+                class="text-xs font-bold
+                       text-slate-700 dark:text-slate-200
+                       truncate max-w-full px-1">
+                ${verb.base}
+            </span>
+
+        </div>
+
+    `).join("");
+
+
+    updateVerbsProgress();
+}
+
+
+function updateVerbsProgress() {
+
+    const progressText =
+        document.getElementById("verbsProgressText");
+
+    const progressBar =
+        document.getElementById("verbsProgressBar");
+
+    if (!progressText || !progressBar) return;
+
+
+    const total =
+        IRREGULAR_VERBS.length;
+
+    const learned = 0;
+
+    const percentage =
+        total > 0
+            ? (learned / total) * 100
+            : 0;
+
+
+    progressText.textContent =
+        `${learned} / ${total}`;
+
+    progressBar.style.width =
+        `${percentage}%`;
+}
+
+        
         renderIrregularVerbs();
+renderVerbsProgressMap();
         
     </script>
 
