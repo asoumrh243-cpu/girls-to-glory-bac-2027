@@ -1167,6 +1167,33 @@
                 </div>
 
             </div>
+
+
+            <!-- Logout -->
+
+<div
+    class="bg-white dark:bg-slate-900 p-4 rounded-2xl
+           border border-slate-200 dark:border-slate-800
+           shadow-sm">
+
+    <button
+        id="logoutBtn"
+        type="button"
+        class="w-full
+               rounded-xl
+               bg-red-50 dark:bg-red-950/30
+               text-red-600 dark:text-red-400
+               font-bold
+               py-3
+               text-sm">
+
+        <i class="fa-solid fa-right-from-bracket ml-1"></i>
+
+        تسجيل الخروج
+
+    </button>
+
+</div>
             
             <!-- Telegram -->
 
@@ -5858,26 +5885,26 @@ renderVerbsProgressMap();
 
         <div id="authFormContainer">
 
-            <!-- Username -->
+           <!-- Email Address -->
 
 <div class="mb-3">
 
-    <label
-        class="block
-               text-xs
-               font-bold
-               text-slate-700 dark:text-slate-300
-               mb-1.5">
+   <label
+    class="block
+           text-xs
+           font-bold
+           text-slate-700 dark:text-slate-300
+           mb-1.5">
 
-        اسم المستخدم
+    البريد الإلكتروني
 
-    </label>
-
+</label>
+    
     <input
-        id="authUsername"
-        type="text"
-        autocomplete="username"
-        placeholder="مثال: imad123"
+       id="authUsername"
+type="email"
+autocomplete="email"
+placeholder="مثال: example@gmail.com"
         class="w-full
                bg-slate-50 dark:bg-slate-800
                border border-slate-200 dark:border-slate-700
@@ -6098,22 +6125,6 @@ renderVerbsProgressMap();
             </div>
 
 
-            <button
-                id="logoutBtn"
-                type="button"
-                class="w-full
-                       rounded-xl
-                       bg-red-50 dark:bg-red-950/30
-                       text-red-600 dark:text-red-400
-                       font-bold
-                       py-3
-                       text-sm">
-
-                <i class="fa-solid fa-right-from-bracket ml-1"></i>
-
-                تسجيل الخروج
-
-            </button>
 
         </div>
 
@@ -6388,39 +6399,17 @@ document
     .getElementById("registerBtn")
     ?.addEventListener("click", async () => {
 
-        const username =
-            authUsername.value.trim().toLowerCase();
+        const email =
+            authUsername.value.trim();
 
         const password =
             authPassword.value;
 
 
-        if (!username || !password) {
+        if (!email || !password) {
 
             showAuthMessage(
-                "أدخلي اسم المستخدم وكلمة المرور."
-            );
-
-            return;
-
-        }
-
-
-        if (username.length < 3) {
-
-            showAuthMessage(
-                "اسم المستخدم يجب أن يكون 3 أحرف على الأقل."
-            );
-
-            return;
-
-        }
-
-
-        if (!/^[a-z0-9_]+$/.test(username)) {
-
-            showAuthMessage(
-                "اسم المستخدم يستعمل حروفًا إنجليزية وأرقامًا و _ فقط."
+                "أدخلي البريد الإلكتروني وكلمة المرور."
             );
 
             return;
@@ -6441,33 +6430,10 @@ document
 
         try {
 
-            const usernameRef =
-                doc(db, "usernames", username);
-
-
-            const usernameSnap =
-                await getDoc(usernameRef);
-
-
-            if (usernameSnap.exists()) {
-
-                showAuthMessage(
-                    "اسم المستخدم هذا مستعمل من قبل."
-                );
-
-                return;
-
-            }
-
-
-            const internalEmail =
-                `${username}@girls-to-glory.firebaseapp.com`;
-
-
             const userCredential =
                 await createUserWithEmailAndPassword(
                     auth,
-                    internalEmail,
+                    email,
                     password
                 );
 
@@ -6477,18 +6443,9 @@ document
 
 
             await setDoc(
-                usernameRef,
-                {
-                    username: username,
-                    uid: user.uid
-                }
-            );
-
-
-            await setDoc(
                 doc(db, "users", user.uid),
                 {
-                    username: username,
+                    email: email,
                     uid: user.uid,
                     isGuest: false
                 }
@@ -6500,20 +6457,43 @@ document
                 "success"
             );
 
+
         } catch (error) {
 
             console.error(error);
 
-            showAuthMessage(
-                "تعذر إنشاء الحساب. حاولي مرة أخرى."
-            );
+            if (error.code === "auth/email-already-in-use") {
+
+                showAuthMessage(
+                    "هذا البريد الإلكتروني مستعمل من قبل."
+                );
+
+            } else if (error.code === "auth/invalid-email") {
+
+                showAuthMessage(
+                    "البريد الإلكتروني غير صالح."
+                );
+
+            } else if (error.code === "auth/weak-password") {
+
+                showAuthMessage(
+                    "كلمة المرور ضعيفة. استعملي 6 أحرف على الأقل."
+                );
+
+            } else {
+
+                showAuthMessage(
+                    "تعذر إنشاء الحساب. حاولي مرة أخرى."
+                );
+
+            }
 
         }
 
     });
 
 
-  /* =========================================================
+/* =========================================================
    LOGIN
    ========================================================= */
 
@@ -6521,17 +6501,17 @@ document
     .getElementById("loginBtn")
     ?.addEventListener("click", async () => {
 
-        const username =
-            authUsername.value.trim().toLowerCase();
+        const email =
+            authUsername.value.trim();
 
         const password =
             authPassword.value;
 
 
-        if (!username || !password) {
+        if (!email || !password) {
 
             showAuthMessage(
-                "أدخلي اسم المستخدم وكلمة المرور."
+                "أدخلي البريد الإلكتروني وكلمة المرور."
             );
 
             return;
@@ -6541,32 +6521,9 @@ document
 
         try {
 
-            const usernameRef =
-                doc(db, "usernames", username);
-
-
-            const usernameSnap =
-                await getDoc(usernameRef);
-
-
-            if (!usernameSnap.exists()) {
-
-                showAuthMessage(
-                    "اسم المستخدم أو كلمة المرور غير صحيحة."
-                );
-
-                return;
-
-            }
-
-
-            const internalEmail =
-                `${username}@girls-to-glory.firebaseapp.com`;
-
-
             await signInWithEmailAndPassword(
                 auth,
-                internalEmail,
+                email,
                 password
             );
 
@@ -6581,9 +6538,32 @@ document
 
             console.error(error);
 
-            showAuthMessage(
-                "اسم المستخدم أو كلمة المرور غير صحيحة."
-            );
+
+            if (
+                error.code === "auth/invalid-credential" ||
+                error.code === "auth/wrong-password" ||
+                error.code === "auth/user-not-found"
+            ) {
+
+                showAuthMessage(
+                    "البريد الإلكتروني أو كلمة المرور غير صحيحة."
+                );
+
+            } else if (
+                error.code === "auth/invalid-email"
+            ) {
+
+                showAuthMessage(
+                    "البريد الإلكتروني غير صالح."
+                );
+
+            } else {
+
+                showAuthMessage(
+                    "تعذر تسجيل الدخول. حاولي مرة أخرى."
+                );
+
+            }
 
         }
 
@@ -6647,7 +6627,7 @@ document
         });
 
 
-   /* =========================================================
+  /* =========================================================
    AUTH STATE
    ========================================================= */
 
@@ -6690,11 +6670,14 @@ onAuthStateChanged(
                             userSnap.data();
 
                         authUserEmail.textContent =
-                            userData.username || "مستخدم";
+                            userData.email ||
+                            user.email ||
+                            "مستخدم";
 
                     } else {
 
                         authUserEmail.textContent =
+                            user.email ||
                             "مستخدم";
 
                     }
@@ -6704,6 +6687,7 @@ onAuthStateChanged(
                     console.error(error);
 
                     authUserEmail.textContent =
+                        user.email ||
                         "مستخدم";
 
                 }
