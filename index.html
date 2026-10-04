@@ -6916,10 +6916,10 @@ function closeGloryAI() {
    GLORY AI - EVENTS
    ========================================================= */
 
-gloryAiFab?.addEventListener(
-    "click",
-    openGloryAI
-);
+gloryAiFab?.addEventListener("click", () => {
+    alert("زر Glory AI خدام");
+    openGloryAI();
+});
 
 
 gloryAiCloseBtn?.addEventListener(
@@ -8681,6 +8681,10 @@ if (
     </div>
 
 </div>
+
+   <script>
+    window.dispatchEvent(new Event("glory-ai-html-ready"));
+</script>
     
 </body>
     </html>
