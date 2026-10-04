@@ -6176,18 +6176,31 @@ placeholder="مثال: example@gmail.com"
     } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
 
-    // Firebase Firestore
-   import {
+    import {
     getFirestore,
     doc,
     setDoc,
     getDoc,
     updateDoc,
     collection,
-    getCountFromServer
+    getCountFromServer,
+    addDoc,
+    getDocs,
+    query,
+    orderBy,
+    deleteDoc,
+    serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
 
+        // Firebase AI Logic
+import {
+    getAI,
+    getGenerativeModel,
+    GoogleAIBackend
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-ai.js";
+
+        
     /* =========================================================
        FIREBASE CONFIG
        ========================================================= */
@@ -6250,6 +6263,28 @@ placeholder="مثال: example@gmail.com"
         getFirestore(app);
 
 
+        /* =========================================================
+   GLORY AI - FIREBASE AI LOGIC
+   ========================================================= */
+
+const ai =
+    getAI(
+        app,
+        {
+            backend:
+                new GoogleAIBackend()
+        }
+    );
+
+const gloryAiModel =
+    getGenerativeModel(
+        ai,
+        {
+            model: "gemini-3.8-flash"
+        }
+    );
+
+        
     /* =========================================================
        TEST
        ========================================================= */
@@ -6721,8 +6756,1931 @@ onAuthStateChanged(
    ========================================================= */
 
 loadUsersCount();
+
+
+/* =========================================================
+   GLORY AI
+   FINAL CLEAN VERSION
+   Firebase AI Logic + Firestore
+   ========================================================= */
+
+
+/* =========================================================
+   GLORY AI - DOM
+   ========================================================= */
+
+const gloryAiFab =
+    document.getElementById("gloryAiFab");
+
+const gloryAiPanel =
+    document.getElementById("gloryAiPanel");
+
+const gloryAiCloseBtn =
+    document.getElementById("gloryAiCloseBtn");
+
+const gloryAiMessages =
+    document.getElementById("gloryAiMessages");
+
+const gloryAiInput =
+    document.getElementById("gloryAiInput");
+
+const gloryAiSendBtn =
+    document.getElementById("gloryAiSendBtn");
+
+const gloryAiHistoryBtn =
+    document.getElementById("gloryAiHistoryBtn");
+
+const gloryAiHistoryPanel =
+    document.getElementById("gloryAiHistoryPanel");
+
+const gloryAiHistoryBackBtn =
+    document.getElementById("gloryAiHistoryBackBtn");
+
+const gloryAiHistoryList =
+    document.getElementById("gloryAiHistoryList");
+
+const gloryAiNewChatBtn =
+    document.getElementById("gloryAiNewChatBtn");
+
+const gloryAiVoiceBtn =
+    document.getElementById("gloryAiVoiceBtn");
+
+
+/* =========================================================
+   GLORY AI - STATE
+   ========================================================= */
+
+let currentGloryChatId = null;
+
+let currentGloryChat = null;
+
+let gloryAiSending = false;
+
+
+/* =========================================================
+   GLORY AI - SYSTEM INSTRUCTION
+   ========================================================= */
+
+const GLORY_AI_SYSTEM_INSTRUCTION = `
+أنتِ Glory AI، المساعدة الذكية داخل منصة
+Girls To Glory BAC 2027.
+
+دورك الأساسي هو مساعدة الطالبات في تعلم الإنجليزية
+والمراجعة والتحضير للبكالوريا.
+
+المجالات التي تساعدين فيها:
+
+- Grammar
+- Vocabulary
+- Pronunciation
+- Reading
+- Listening
+- Writing
+- BAC exercises
+- Revision
+- English explanations
+
+قواعد أسلوبك:
+
+1. كوني ودودة وطبيعية.
+2. اجعلي الإجابات واضحة ومختصرة قدر الإمكان.
+3. إذا كانت الطالبة تتحدث بالدارجة الجزائرية، ردي بالدارجة الجزائرية.
+4. إذا كانت تتحدث بالعربية، ردي بالعربية.
+5. إذا كانت تتحدث بالإنجليزية، ردي بالإنجليزية.
+6. عند شرح الإنجليزية، أعطي أمثلة بسيطة عند الحاجة.
+7. لا تعقدي الشرح بدون سبب.
+8. إذا كان السؤال غير واضح، اطلبي توضيحًا قصيرًا.
+9. ساعدي الطالبة على التعلم والفهم.
+10. عند تمارين BAC، اشرحي الحل بطريقة تعليمية وواضحة.
+11. لا تدعي أنك إنسانة حقيقية.
+12. لا تخرجي عن دورك كمساعدة تعليمية.
+`;
+
+
+/* =========================================================
+   GLORY AI MODEL
+   ========================================================= */
+
+const gloryAiModel =
+    getGenerativeModel(
+        ai,
+        {
+            model: "gemini-3.8-flash",
+
+            systemInstruction:
+                GLORY_AI_SYSTEM_INSTRUCTION
+        }
+    );
         
+        
+/* =========================================================
+   GLORY AI - OPEN
+   ========================================================= */
+
+function openGloryAI() {
+
+    if (!gloryAiPanel) return;
+
+    gloryAiPanel.classList.remove(
+        "opacity-0",
+        "pointer-events-none",
+        "translate-y-4"
+    );
+
+    setTimeout(() => {
+
+        gloryAiInput?.focus();
+
+    }, 150);
+}
+
+
+/* =========================================================
+   GLORY AI - CLOSE
+   ========================================================= */
+
+function closeGloryAI() {
+
+    if (!gloryAiPanel) return;
+
+    gloryAiPanel.classList.add(
+        "opacity-0",
+        "pointer-events-none",
+        "translate-y-4"
+    );
+
+}
+
+
+/* =========================================================
+   GLORY AI - EVENTS
+   ========================================================= */
+
+gloryAiFab?.addEventListener(
+    "click",
+    openGloryAI
+);
+
+
+gloryAiCloseBtn?.addEventListener(
+    "click",
+    closeGloryAI
+);
+
+
+/* =========================================================
+   GLORY AI - CHECK MODEL
+   ========================================================= */
+
+function isGloryAIReady() {
+
+    return (
+        typeof gloryAiModel !== "undefined" &&
+        gloryAiModel !== null &&
+        typeof gloryAiModel.startChat === "function"
+    );
+}
+
+
+/* =========================================================
+   GLORY AI - START CHAT
+   ========================================================= */
+
+function startGloryAIChat(
+    history = []
+) {
+
+    if (!isGloryAIReady()) {
+
+        console.error(
+            "Glory AI model is not initialized."
+        );
+
+        currentGloryChat = null;
+
+        return null;
+    }
+
+
+    try {
+
+        currentGloryChat =
+            gloryAiModel.startChat({
+
+                history,
+
+                generationConfig: {
+                    maxOutputTokens: 700
+                }
+
+            });
+
+
+        return currentGloryChat;
+
+    } catch (error) {
+
+        console.error(
+            "Glory AI startChat error:",
+            error
+        );
+
+        currentGloryChat = null;
+
+        return null;
+    }
+}
+
+
+/* =========================================================
+   GLORY AI - NEW CHAT ID
+   ========================================================= */
+
+function createGloryAIChatId() {
+
+    return (
+        Date.now().toString(36) +
+        "-" +
+        Math.random()
+            .toString(36)
+            .slice(2, 10)
+    );
+}
+
+
+/* =========================================================
+   GLORY AI - USER
+   ========================================================= */
+
+function getGloryAIUser() {
+
+    if (
+        typeof auth === "undefined" ||
+        !auth?.currentUser
+    ) {
+
+        return null;
+    }
+
+    return auth.currentUser;
+}
+
+
+/* =========================================================
+   GLORY AI - CHAT REF
+   ========================================================= */
+
+function getGloryAIChatRef(
+    chatId
+) {
+
+    const user =
+        getGloryAIUser();
+
+
+    if (!user || !chatId) {
+        return null;
+    }
+
+
+    if (
+        typeof db === "undefined"
+    ) {
+
+        console.error(
+            "Firestore db is not initialized."
+        );
+
+        return null;
+    }
+
+
+    return doc(
+        db,
+        "users",
+        user.uid,
+        "gloryChats",
+        chatId
+    );
+}
+
+
+/* =========================================================
+   GLORY AI - CLEAR MESSAGES
+   ========================================================= */
+
+function clearGloryAIUI() {
+
+    if (!gloryAiMessages) return;
+
+    gloryAiMessages.innerHTML = "";
+}
+
+
+/* =========================================================
+   GLORY AI - ADD MESSAGE
+   ========================================================= */
+
+function addGloryAIMessage(
+    text,
+    sender = "ai"
+) {
+
+    if (!gloryAiMessages) return;
+
+
+    const safeText =
+        String(text ?? "").trim();
+
+
+    if (!safeText) return;
+
+
+    const wrapper =
+        document.createElement("div");
+
+
+    /* -----------------------------------------------------
+       USER
+       ----------------------------------------------------- */
+
+    if (sender === "user") {
+
+        wrapper.className =
+            "flex justify-end";
+
+
+        wrapper.innerHTML = `
+            <div
+                class="max-w-[82%]
+                       bg-[var(--brand-main)]
+                       text-white
+                       rounded-2xl
+                       rounded-tl-md
+                       px-3 py-2.5
+                       text-xs
+                       shadow-sm">
+
+                <p></p>
+
+            </div>
+        `;
+
+
+    /* -----------------------------------------------------
+       AI
+       ----------------------------------------------------- */
+
+    } else {
+
+        wrapper.className =
+            "flex items-start gap-2";
+
+
+        wrapper.innerHTML = `
+            <img
+                src="glory-ai.png"
+                alt="Glory AI"
+                class="w-8 h-8
+                       rounded-full
+                       shrink-0">
+
+            <div
+                class="max-w-[82%]
+                       bg-white
+                       dark:bg-slate-900
+                       border
+                       border-slate-200
+                       dark:border-slate-800
+                       rounded-2xl
+                       rounded-tr-md
+                       px-3 py-2.5
+                       text-xs
+                       text-slate-700
+                       dark:text-slate-200
+                       shadow-sm">
+
+                <p></p>
+
+            </div>
+        `;
+    }
+
+
+    const messageElement =
+        wrapper.querySelector("p");
+
+
+    if (messageElement) {
+
+        messageElement.textContent =
+            safeText;
+    }
+
+
+    gloryAiMessages.appendChild(
+        wrapper
+    );
+
+
+    gloryAiMessages.scrollTop =
+        gloryAiMessages.scrollHeight;
+}
+
+
+/* =========================================================
+   GLORY AI - WELCOME
+   ========================================================= */
+
+function showGloryAIWelcome() {
+
+    addGloryAIMessage(
+        "سلام 💕 أنا Glory AI!\nنقدر نعاونك في أي حاجة تخص الإنجليزية.",
+        "ai"
+    );
+}
+
+
+/* =========================================================
+   GLORY AI - READ UI MESSAGES
+   ========================================================= */
+
+function getGloryAIUIMessages() {
+
+    if (!gloryAiMessages) {
+        return [];
+    }
+
+
+    const wrappers =
+        Array.from(
+            gloryAiMessages.children
+        );
+
+
+    const messages = [];
+
+
+    wrappers.forEach(
+        wrapper => {
+
+            const messageElement =
+                wrapper.querySelector("p");
+
+
+            if (!messageElement) {
+                return;
+            }
+
+
+            const text =
+                messageElement.textContent
+                    ?.trim();
+
+
+            if (!text) {
+                return;
+            }
+
+
+            const isUser =
+                wrapper.classList.contains(
+                    "justify-end"
+                );
+
+
+            messages.push({
+
+                role:
+                    isUser
+                        ? "user"
+                        : "model",
+
+                text
+
+            });
+
+        }
+    );
+
+
+    return messages;
+}
+
+
+/* =========================================================
+   GLORY AI - BUILD FIREBASE HISTORY
+   ========================================================= */
+
+function buildGloryAIHistory(
+    messages = []
+) {
+
+    if (!Array.isArray(messages)) {
+        return [];
+    }
+
+
+    return messages
+        .filter(
+            message =>
+                message &&
+                (
+                    message.role === "user" ||
+                    message.role === "model"
+                ) &&
+                typeof message.text === "string" &&
+                message.text.trim()
+        )
+        .map(
+            message => ({
+
+                role:
+                    message.role,
+
+                parts: [
+
+                    {
+                        text:
+                            message.text.trim()
+                    }
+
+                ]
+
+            })
+        );
+}
+
+
+/* =========================================================
+   GLORY AI - SAVE CHAT
+   ========================================================= */
+
+async function saveGloryAIChat() {
+
+    try {
+
+        const user =
+            getGloryAIUser();
+
+
+        /*
+         * إذا لم تكن الطالبة مسجلة الدخول
+         * نستعمل Glory AI عاديًا ولكن لا نحفظ.
+         */
+
+        if (!user) {
+
+            return;
+        }
+
+
+        const messages =
+            getGloryAIUIMessages();
+
+
+        /*
+         * لا نحفظ محادثة فارغة.
+         */
+
+        if (!messages.length) {
+            return;
+        }
+
+
+        /*
+         * إنشاء ID فقط عند الحاجة للحفظ.
+         */
+
+        if (!currentGloryChatId) {
+
+            currentGloryChatId =
+                createGloryAIChatId();
+        }
+
+
+        const chatRef =
+            getGloryAIChatRef(
+                currentGloryChatId
+            );
+
+
+        if (!chatRef) {
+            return;
+        }
+
+
+        const firstUserMessage =
+            messages.find(
+                message =>
+                    message.role === "user"
+            );
+
+
+        const title =
+            firstUserMessage?.text
+                ?.slice(0, 60)
+                ?.trim()
+            ||
+            "محادثة Glory AI";
+
+
+        const existingSnap =
+            await getDoc(
+                chatRef
+            );
+
+
+        if (existingSnap.exists()) {
+
+            await updateDoc(
+                chatRef,
+                {
+
+                    title,
+
+                    messages,
+
+                    updatedAt:
+                        serverTimestamp()
+
+                }
+            );
+
+        } else {
+
+            await setDoc(
+                chatRef,
+                {
+
+                    title,
+
+                    messages,
+
+                    createdAt:
+                        serverTimestamp(),
+
+                    updatedAt:
+                        serverTimestamp()
+
+                }
+            );
+        }
+
+
+    } catch (error) {
+
+        console.error(
+            "Glory AI save error:",
+            error
+        );
+    }
+}
+
+
+/* =========================================================
+   GLORY AI - OPEN SAVED CHAT
+   ========================================================= */
+
+async function openGloryAIChat(
+    chatId,
+    chatData
+) {
+
+    try {
+
+        if (!chatId) {
+            return;
+        }
+
+
+        const messages =
+            Array.isArray(
+                chatData?.messages
+            )
+                ? chatData.messages
+                : [];
+
+
+        currentGloryChatId =
+            chatId;
+
+
+        closeGloryAIHistory();
+
+
+        clearGloryAIUI();
+
+
+        /*
+         * عرض المحادثة.
+         */
+
+        messages.forEach(
+            message => {
+
+                addGloryAIMessage(
+
+                    message?.text || "",
+
+                    message?.role === "user"
+                        ? "user"
+                        : "ai"
+
+                );
+
+            }
+        );
+
+
+        /*
+         * إعادة بناء history الخاص بـ Gemini.
+         */
+
+        const history =
+            buildGloryAIHistory(
+                messages
+            );
+
+
+        /*
+         * إعادة تشغيل Chat
+         * مع history القديمة.
+         */
+
+        const chat =
+            startGloryAIChat(
+                history
+            );
+
+
+        if (!chat) {
+
+            addGloryAIMessage(
+                "ما قدرتش نفتح هذه المحادثة حاليًا.",
+                "ai"
+            );
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Glory AI open chat error:",
+            error
+        );
+
+        clearGloryAIUI();
+
+        showGloryAIWelcome();
+
+        currentGloryChatId =
+            null;
+
+        startGloryAIChat();
+    }
+}
+
+
+/* =========================================================
+   GLORY AI - LOAD HISTORY
+   ========================================================= */
+
+async function loadGloryAIHistory() {
+
+    if (!gloryAiHistoryList) {
+        return;
+    }
+
+
+    gloryAiHistoryList.innerHTML = `
+        <div
+            class="text-center
+                   text-xs
+                   text-slate-400
+                   py-6">
+
+            جاري تحميل المحادثات...
+
+        </div>
+    `;
+
+
+    try {
+
+        const user =
+            getGloryAIUser();
+
+
+        if (!user) {
+
+            gloryAiHistoryList.innerHTML = `
+                <div
+                    class="text-center
+                           text-xs
+                           text-slate-400
+                           py-6">
+
+                    سجلي الدخول أولاً لعرض المحادثات.
+
+                </div>
+            `;
+
+            return;
+        }
+
+
+        const chatsRef =
+            collection(
+                db,
+                "users",
+                user.uid,
+                "gloryChats"
+            );
+
+
+        /*
+         * نستعمل getDocs بدون orderBy
+         * لتجنب الحاجة إلى Firestore composite index.
+         */
+
+        const snapshot =
+            await getDocs(
+                chatsRef
+            );
+
+
+        const chats = [];
+
+
+        snapshot.forEach(
+            chatDoc => {
+
+                chats.push({
+
+                    id:
+                        chatDoc.id,
+
+                    data:
+                        chatDoc.data()
+
+                });
+
+            }
+        );
+
+
+        /*
+         * ترتيب محلي حسب updatedAt.
+         */
+
+        chats.sort(
+            (a, b) => {
+
+                const aTime =
+                    a.data?.updatedAt?.toMillis?.()
+                    || 0;
+
+                const bTime =
+                    b.data?.updatedAt?.toMillis?.()
+                    || 0;
+
+                return bTime - aTime;
+            }
+        );
+
+
+        gloryAiHistoryList.innerHTML = "";
+
+
+        if (!chats.length) {
+
+            gloryAiHistoryList.innerHTML = `
+                <div
+                    class="text-center
+                           text-xs
+                           text-slate-400
+                           py-6">
+
+                    مازال ما عندك حتى محادثة.
+
+                </div>
+            `;
+
+            return;
+        }
+
+
+        chats.forEach(
+            chat => {
+
+                const data =
+                    chat.data;
+
+
+                const button =
+                    document.createElement(
+                        "button"
+                    );
+
+
+                button.type =
+                    "button";
+
+
+                button.className = `
+                    w-full
+                    text-right
+                    p-3
+                    rounded-xl
+                    bg-white
+                    dark:bg-slate-900
+                    border
+                    border-slate-200
+                    dark:border-slate-800
+                    hover:border-purple-400
+                    transition
+                `;
+
+
+                const row =
+                    document.createElement(
+                        "div"
+                    );
+
+                row.className =
+                    "flex items-center gap-3";
+
+
+                const icon =
+                    document.createElement(
+                        "div"
+                    );
+
+                icon.className = `
+                    w-9 h-9
+                    rounded-xl
+                    bg-purple-100
+                    dark:bg-purple-950
+                    text-purple-600
+                    flex
+                    items-center
+                    justify-center
+                    shrink-0
+                `;
+
+
+                icon.innerHTML =
+                    `<i class="fa-solid fa-message"></i>`;
+
+
+                const content =
+                    document.createElement(
+                        "div"
+                    );
+
+                content.className =
+                    "min-w-0 flex-1";
+
+
+                const title =
+                    document.createElement(
+                        "p"
+                    );
+
+                title.className = `
+                    font-bold
+                    text-xs
+                    text-slate-700
+                    dark:text-slate-200
+                    truncate
+                `;
+
+
+                title.textContent =
+                    data?.title ||
+                    "محادثة Glory AI";
+
+
+                const count =
+                    document.createElement(
+                        "p"
+                    );
+
+                count.className = `
+                    text-[10px]
+                    text-slate-400
+                    mt-1
+                `;
+
+
+                const messageCount =
+                    Array.isArray(
+                        data?.messages
+                    )
+                        ? data.messages.length
+                        : 0;
+
+
+                count.textContent =
+                    `${messageCount} رسالة`;
+
+
+                content.appendChild(
+                    title
+                );
+
+                content.appendChild(
+                    count
+                );
+
+
+                row.appendChild(
+                    icon
+                );
+
+                row.appendChild(
+                    content
+                );
+
+
+                button.appendChild(
+                    row
+                );
+
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        openGloryAIChat(
+                            chat.id,
+                            data
+                        );
+
+                    }
+                );
+
+
+                gloryAiHistoryList.appendChild(
+                    button
+                );
+
+            }
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Glory AI history error:",
+            error
+        );
+
+
+        gloryAiHistoryList.innerHTML = `
+            <div
+                class="text-center
+                       text-xs
+                       text-red-400
+                       py-6">
+
+                حدث خطأ أثناء تحميل المحادثات.
+
+            </div>
+        `;
+    }
+}
+
+
+/* =========================================================
+   GLORY AI - HISTORY PANEL
+   ========================================================= */
+
+function openGloryAIHistory() {
+
+    if (!gloryAiHistoryPanel) {
+        return;
+    }
+
+
+    gloryAiHistoryPanel.classList.remove(
+        "hidden"
+    );
+
+
+    loadGloryAIHistory();
+}
+
+
+function closeGloryAIHistory() {
+
+    gloryAiHistoryPanel?.classList.add(
+        "hidden"
+    );
+}
+
+
+gloryAiHistoryBtn?.addEventListener(
+    "click",
+    openGloryAIHistory
+);
+
+
+gloryAiHistoryBackBtn?.addEventListener(
+    "click",
+    closeGloryAIHistory
+);
+
+
+/* =========================================================
+   GLORY AI - NEW CHAT
+   ========================================================= */
+
+function startFreshGloryAIChat() {
+
+    /*
+     * إلغاء المحادثة القديمة.
+     */
+
+    currentGloryChatId =
+        null;
+
+    currentGloryChat =
+        null;
+
+
+    /*
+     * تنظيف الواجهة.
+     */
+
+    clearGloryAIUI();
+
+
+    /*
+     * إنشاء Chat جديد بدون history.
+     */
+
+    startGloryAIChat([]);
+
+
+    /*
+     * رسالة الترحيب.
+     */
+
+    showGloryAIWelcome();
+
+
+    /*
+     * إغلاق سجل المحادثات.
+     */
+
+    closeGloryAIHistory();
+
+
+    setTimeout(
+        () => {
+
+            gloryAiInput?.focus();
+
+        },
+        100
+    );
+}
+
+
+gloryAiNewChatBtn?.addEventListener(
+    "click",
+    startFreshGloryAIChat
+);
+
+
+/* =========================================================
+   GLORY AI - SEND MESSAGE
+   ========================================================= */
+
+async function sendGloryAIMessage() {
+
+    /*
+     * منع الضغط المتكرر.
+     */
+
+    if (gloryAiSending) {
+        return;
+    }
+
+
+    const message =
+        gloryAiInput?.value
+            ?.trim();
+
+
+    if (!message) {
+        return;
+    }
+
+
+    /*
+     * التأكد أن النموذج موجود.
+     */
+
+    if (!isGloryAIReady()) {
+
+        addGloryAIMessage(
+            "Glory AI مازال ما تجهزش. تأكدي من إعداد Firebase AI Logic.",
+            "ai"
+        );
+
+        return;
+    }
+
+
+    /*
+     * إنشاء Chat إذا لم يكن موجودًا.
+     */
+
+    if (!currentGloryChat) {
+
+        startGloryAIChat([]);
+    }
+
+
+    if (!currentGloryChat) {
+
+        addGloryAIMessage(
+            "ما قدرتش نجهز المحادثة حاليًا. حاولي مرة أخرى.",
+            "ai"
+        );
+
+        return;
+    }
+
+
+    /*
+     * حالة الإرسال.
+     */
+
+    gloryAiSending =
+        true;
+
+
+    if (gloryAiSendBtn) {
+
+        gloryAiSendBtn.disabled =
+            true;
+
+        gloryAiSendBtn.classList.add(
+            "opacity-50"
+        );
+    }
+
+
+    /*
+     * عرض رسالة المستخدم.
+     */
+
+    addGloryAIMessage(
+        message,
+        "user"
+    );
+
+
+    if (gloryAiInput) {
+
+        gloryAiInput.value =
+            "";
+    }
+
+
+    try {
+
+        /*
+         * إرسال الرسالة إلى Gemini.
+         *
+         * startChat + sendMessage
+         * يحافظان على سياق المحادثة.
+         */
+
+        const result =
+            await currentGloryChat.sendMessage(
+                message
+            );
+
+
+        const response =
+            result?.response;
+
+
+        const aiText =
+            response?.text?.()
+                ?.trim()
+            ||
+            "ما قدرتش نجيبلك رد حاليا.";
+
+
+        /*
+         * عرض جواب Glory AI.
+         */
+
+        addGloryAIMessage(
+            aiText,
+            "ai"
+        );
+
+
+        /*
+         * حفظ المحادثة.
+         */
+
+        await saveGloryAIChat();
+
+
+    } catch (error) {
+
+        console.error(
+            "Glory AI error:",
+            error
+        );
+
+
+        let errorMessage =
+            "صار مشكل في الاتصال بـ Glory AI. حاولي مرة أخرى.";
+
+
+        const errorCode =
+            String(
+                error?.code || ""
+            )
+                .toLowerCase();
+
+
+        const errorText =
+            String(
+                error?.message || ""
+            )
+                .toLowerCase();
+
+
+        if (
+            errorCode.includes(
+                "permission"
+            ) ||
+            errorText.includes(
+                "permission"
+            )
+        ) {
+
+            errorMessage =
+                "ما عنديش صلاحية للوصول لهذا الطلب حاليًا.";
+
+
+        } else if (
+            errorText.includes(
+                "quota"
+            ) ||
+            errorText.includes(
+                "resource exhausted"
+            )
+        ) {
+
+            errorMessage =
+                "وصلنا مؤقتًا لحد الاستخدام. حاولي بعد قليل.";
+
+
+        } else if (
+            errorText.includes(
+                "network"
+            ) ||
+            errorText.includes(
+                "fetch"
+            )
+        ) {
+
+            errorMessage =
+                "تحققي من اتصال الإنترنت وحاولي مرة أخرى.";
+
+        }
+
+
+        addGloryAIMessage(
+            errorMessage,
+            "ai"
+        );
+
+
+    } finally {
+
+        gloryAiSending =
+            false;
+
+
+        if (gloryAiSendBtn) {
+
+            gloryAiSendBtn.disabled =
+                false;
+
+            gloryAiSendBtn.classList.remove(
+                "opacity-50"
+            );
+        }
+
+
+        gloryAiInput?.focus();
+    }
+}
+
+
+/* =========================================================
+   GLORY AI - SEND BUTTON
+   ========================================================= */
+
+gloryAiSendBtn?.addEventListener(
+    "click",
+    sendGloryAIMessage
+);
+
+
+/* =========================================================
+   GLORY AI - ENTER
+   ========================================================= */
+
+gloryAiInput?.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key === "Enter" &&
+            !event.shiftKey
+        ) {
+
+            event.preventDefault();
+
+            sendGloryAIMessage();
+        }
+    }
+);
+
+
+/* =========================================================
+   GLORY AI - VOICE BUTTON
+   ========================================================= */
+
+gloryAiVoiceBtn?.addEventListener(
+    "click",
+    () => {
+
+        addGloryAIMessage(
+            "ميزة التحدث الصوتي نربطوها لاحقًا. 🎤",
+            "ai"
+        );
+
+    }
+);
+
+
+/* =========================================================
+   GLORY AI - INITIALIZATION
+   ========================================================= */
+
+function initializeGloryAI() {
+
+    /*
+     * لا نمسح HTML الترحيبي الموجود.
+     */
+
+    if (!isGloryAIReady()) {
+
+        console.warn(
+            "Glory AI: model not ready at initialization."
+        );
+
+        return;
+    }
+
+
+    /*
+     * إنشاء Chat محلي جديد.
+     */
+
+    if (!currentGloryChat) {
+
+        startGloryAIChat([]);
+    }
+}
+
+
+initializeGloryAI();
+
+
+/* =========================================================
+   GLORY AI - AUTH STATE
+   ========================================================= */
+
+if (
+    typeof onAuthStateChanged === "function" &&
+    typeof auth !== "undefined"
+) {
+
+    onAuthStateChanged(
+        auth,
+        user => {
+
+            /*
+             * عند تسجيل الخروج:
+             * نمسح جلسة Glory الحالية فقط.
+             */
+
+            if (!user) {
+
+                currentGloryChatId =
+                    null;
+
+                currentGloryChat =
+                    null;
+
+                return;
+            }
+
+
+            /*
+             * عند دخول حساب:
+             * نبدأ Chat جديد حتى لا نخلط
+             * سياق حساب سابق مع الحساب الجديد.
+             */
+
+            currentGloryChatId =
+                null;
+
+            currentGloryChat =
+                null;
+
+
+            clearGloryAIUI();
+
+
+            startGloryAIChat([]);
+
+
+            showGloryAIWelcome();
+
+        }
+    );
+}
+
+
+/* =========================================================
+   GLORY AI - END
+   ========================================================= */
+
+
 </script>
+
+
+<!-- =========================================================
+     GLORY AI
+     ========================================================= -->
+
+<!-- Floating Button -->
+<button
+    id="gloryAiFab"
+    type="button"
+    aria-label="فتح Glory AI"
+    class="fixed bottom-24 right-4 z-[9000]
+           w-16 h-16
+           rounded-full
+           bg-gradient-to-br from-purple-500 to-pink-400
+           shadow-xl
+           flex items-center justify-center
+           border-4 border-white dark:border-slate-900
+           transition-transform duration-200
+           hover:scale-105 active:scale-95">
+
+    <img
+        src="glory-ai.png"
+        alt="Glory AI"
+        class="w-full h-full
+               object-cover
+               rounded-full">
+
+</button>
+
+
+<!-- Glory AI Chat -->
+<div
+    id="gloryAiPanel"
+    class="fixed
+           bottom-24
+           right-4
+           z-[8999]
+           w-[calc(100%-2rem)]
+           max-w-sm
+           h-[min(600px,75vh)]
+           bg-white dark:bg-slate-900
+           rounded-3xl
+           shadow-2xl
+           border border-purple-100
+           dark:border-slate-700
+                      overflow-hidden
+           flex flex-col
+           relative
+           opacity-0
+           pointer-events-none
+           translate-y-4
+           transition-all duration-200">
+
+    <!-- Header -->
+    <div
+        class="p-4
+               bg-gradient-to-r
+               from-purple-500
+               to-pink-400
+               text-white">
+
+        <div class="flex items-center gap-3">
+
+            <div
+                class="w-12 h-12
+                       rounded-2xl
+                       bg-white/20
+                       p-1
+                       shrink-0">
+
+                <img
+                    src="glory-ai.png"
+                    alt="Glory AI"
+                    class="w-full h-full
+                           object-cover
+                           rounded-xl">
+
+            </div>
+
+            <div class="flex-1 min-w-0">
+
+                <h3 class="font-black text-base">
+                    Glory AI ✨
+                </h3>
+
+                <p class="text-[10px] opacity-90">
+                    مساعدك الذكي في الإنجليزية
+                </p>
+
+            </div>
+
+            <button
+                id="gloryAiHistoryBtn"
+                type="button"
+                aria-label="سجل المحادثات"
+                class="w-9 h-9
+                       rounded-xl
+                       bg-white/15
+                       hover:bg-white/25
+                       flex items-center justify-center">
+
+                <i class="fa-solid fa-clock-rotate-left"></i>
+
+            </button>
+            
+            <button
+                id="gloryAiCloseBtn"
+                type="button"
+                aria-label="إغلاق Glory AI"
+                class="w-9 h-9
+                       rounded-xl
+                       bg-white/15
+                       hover:bg-white/25
+                       flex items-center justify-center">
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+     GLORY AI - CHAT HISTORY PANEL
+     ========================================================= -->
+
+<div
+    id="gloryAiHistoryPanel"
+    class="hidden
+           absolute
+           inset-0
+           z-20
+           bg-white
+           dark:bg-slate-900
+           flex
+           flex-col">
+
+    <!-- History Header -->
+    <div
+        class="p-4
+               bg-gradient-to-r
+               from-purple-500
+               to-pink-400
+               text-white
+               flex
+               items-center
+               gap-3">
+
+        <button
+            id="gloryAiHistoryBackBtn"
+            type="button"
+            aria-label="العودة للمحادثة"
+            class="w-9 h-9
+                   rounded-xl
+                   bg-white/15
+                   hover:bg-white/25
+                   flex
+                   items-center
+                   justify-center">
+
+            <i class="fa-solid fa-arrow-right"></i>
+
+        </button>
+
+        <div class="flex-1 min-w-0">
+
+            <h3 class="font-black text-sm">
+                سجل المحادثات
+            </h3>
+
+            <p class="text-[10px] opacity-90">
+                محادثاتك السابقة مع Glory AI
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- New Chat -->
+    <div
+        class="p-3
+               border-b
+               border-slate-200
+               dark:border-slate-800">
+
+        <button
+            id="gloryAiNewChatBtn"
+            type="button"
+            class="w-full
+                   rounded-xl
+                   bg-purple-100
+                   dark:bg-purple-950
+                   text-purple-700
+                   dark:text-purple-300
+                   py-3
+                   text-xs
+                   font-bold">
+
+            <i class="fa-solid fa-plus ml-1"></i>
+
+            محادثة جديدة
+
+        </button>
+
+    </div>
+
+
+    <!-- History List -->
+    <div
+        id="gloryAiHistoryList"
+        class="flex-1
+               overflow-y-auto
+               p-3
+               space-y-2
+               bg-slate-50
+               dark:bg-slate-950">
+
+        <!-- سيتم تحميل المحادثات هنا -->
+
+    </div>
+
+</div>
+
+    
+    <!-- Messages -->
+    <div
+        id="gloryAiMessages"
+        class="flex-1
+               overflow-y-auto
+               p-4
+               space-y-3
+               bg-slate-50
+               dark:bg-slate-950">
+
+        <!-- Welcome Message -->
+        <div class="flex items-start gap-2">
+
+            <img
+                src="glory-ai.png"
+                alt=""
+                class="w-8 h-8
+                       rounded-full
+                       shrink-0">
+
+            <div
+                class="max-w-[82%]
+                       bg-white
+                       dark:bg-slate-900
+                       border
+                       border-slate-200
+                       dark:border-slate-800
+                       rounded-2xl
+                       rounded-tr-md
+                       px-3 py-2.5
+                       text-xs
+                       text-slate-700
+                       dark:text-slate-200
+                       shadow-sm">
+
+                <p>
+                    سلام 💕 أنا Glory AI!
+                </p>
+
+                <p class="mt-1">
+                    نقدر نعاونك في أي حاجة تخص الإنجليزية.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Input -->
+    <div
+        class="p-3
+               bg-white
+               dark:bg-slate-900
+               border-t
+               border-slate-200
+               dark:border-slate-800">
+
+        <div class="flex items-center gap-2">
+
+            <button
+                id="gloryAiVoiceBtn"
+                type="button"
+                aria-label="التحدث مع Glory AI"
+                class="w-11 h-11
+                       rounded-xl
+                       bg-purple-100
+                       dark:bg-purple-950
+                       text-purple-600
+                       dark:text-purple-300
+                       flex items-center justify-center
+                       shrink-0">
+
+                <i class="fa-solid fa-microphone"></i>
+
+            </button>
+
+            <input
+                id="gloryAiInput"
+                type="text"
+                placeholder="اكتبي لـ Glory AI..."
+                autocomplete="off"
+                class="flex-1
+                       min-w-0
+                       bg-slate-100
+                       dark:bg-slate-800
+                       border
+                       border-slate-200
+                       dark:border-slate-700
+                       rounded-xl
+                       px-3 py-3
+                       text-xs
+                       text-slate-900
+                       dark:text-white
+                       focus:outline-none
+                       focus:ring-2
+                       focus:ring-purple-400">
+
+            <button
+                id="gloryAiSendBtn"
+                type="button"
+                aria-label="إرسال"
+                class="w-11 h-11
+                       rounded-xl
+                       bg-[var(--brand-main)]
+                       text-white
+                       flex items-center justify-center
+                       shrink-0">
+
+                <i class="fa-solid fa-paper-plane"></i>
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
     
 </body>
     </html>
