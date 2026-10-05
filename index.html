@@ -6200,6 +6200,13 @@ import {
     GoogleAIBackend
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-ai.js";
 
+
+// Firebase App Check
+import {
+    initializeAppCheck,
+    ReCaptchaEnterpriseProvider
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app-check.js";
+
         
     /* =========================================================
        FIREBASE CONFIG
@@ -6231,6 +6238,20 @@ import {
     };
 
 
+        /* =========================================================
+   FIREBASE APP CHECK
+   ========================================================= */
+
+const app = initializeApp(firebaseConfig);
+
+const appCheck = initializeAppCheck(app, {
+    provider: new ReCaptchaEnterpriseProvider(
+        "6LfTmOAtAAAAAH_K3TPySnv7DqkPiveywchiNQ26"
+    ),
+    isTokenAutoRefreshEnabled: true
+});
+
+        
     /* =========================================================
        INITIALIZE FIREBASE
        ========================================================= */
